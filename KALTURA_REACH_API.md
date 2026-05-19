@@ -1093,7 +1093,7 @@ When used through the [Agents Manager](KALTURA_AGENTS_MANAGER_API.md), REACH tas
 - The agent handles task creation, status tracking, and retry logic
 - Results are applied to entries in the same way as manual REACH orders
 
-The Agents Manager supports these REACH services as automated actions: **captions, translation, dubbing, summary, moderation, and metadata enrichment**. For **AI Clips, Quiz, Live Captions, Live Translation, and Video Analysis**, use the REACH API directly via `entryVendorTask.add`. See the [Agents Manager guide](KALTURA_AGENTS_MANAGER_API.md#kaltura-reach--the-services-behind-agent-actions) for the full mapping.
+The Agents Manager supports these REACH services as automated actions: **captions, translation, dubbing, summary, moderation, and metadata enrichment**. For **AI Clips, Quiz, Live Captions, Live Translation, and Video Analysis**, use the REACH API directly via `entryVendorTask.add`. See the [Agents Manager guide](KALTURA_AGENTS_MANAGER_API.md#kaltura-reach-the-services-behind-agent-actions) for the full mapping.
 
 You can mix approaches: use Agents for automated bulk processing, the REACH API directly for on-demand requests, and REACH automation rules for condition-based automatic ordering.
 

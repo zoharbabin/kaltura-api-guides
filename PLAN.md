@@ -1,6 +1,6 @@
 # Kaltura API Guides — Roadmap
 
-**Current state:** 50 guides, 960+ live-tested assertions, 1 playbook.  
+**Current state:** 52 guides, 1000+ live-tested assertions, 1 playbook.  
 Completed guide details: [README.md](README.md). Playbook plan: [playbooks/PLAYBOOK_PLAN.md](playbooks/PLAYBOOK_PLAN.md).
 
 ---

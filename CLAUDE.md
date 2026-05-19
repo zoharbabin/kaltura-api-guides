@@ -105,7 +105,7 @@ Playbooks live in `playbooks/` and follow [playbooks/PLAYBOOK_STANDARDS.md](play
 
 ## Current State
 
-50 guides, 960+ live tests, 1 playbook. Conventional Commits enforced (header under 72 chars). Version managed by release-please.
+52 guides, 1000+ live tests, 1 playbook. Conventional Commits enforced (header under 72 chars). Version managed by release-please.
 
 ## Quick References
 

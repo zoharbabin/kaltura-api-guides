@@ -134,7 +134,7 @@ Retrieve the catalog of actions available for your account. The response include
 ```
 
 **Key points:**
-- The `catalogItemId` inside `vendors[].languages[]` maps directly to a REACH vendor catalog item. See [KALTURA_REACH_API.md](KALTURA_REACH_API.md) for details.
+- The `catalogItemId` inside `vendors[].languages[]` maps directly to a REACH vendor catalog item. See [REACH API](KALTURA_REACH_API.md) for details.
 - The `reachProfiles[].id` is needed when creating actions (the `reach_profile_id` field).
 - Not all action types have vendors/languages (e.g., `summary`, `publish_entry` may have different structures).
 
@@ -150,7 +150,7 @@ Define when your agent should run. Triggers use a `systemName` to identify the e
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `partnerId` | string | Yes | Your Kaltura partner ID |
-| `systemName` | string | Yes | Trigger type identifier. One of: `ENTRY_READY`, `ENTRY_UPDATED`, `ENTRY_ADDED_TO_CATEGORY`, `RUN_ON_DEMAND` (see [Available Triggers](#available-triggers)) |
+| `systemName` | string | Yes | Trigger type identifier. One of: `ENTRY_READY`, `ENTRY_UPDATED`, `ENTRY_ADDED_TO_CATEGORY`, `RUN_ON_DEMAND` (see [Available Triggers](#5-available-triggers)) |
 | `triggerParameters` | object | No | Additional parameters for the trigger (e.g., category filters). Use `{}` for default behavior |
 
 ```json
@@ -484,7 +484,7 @@ The Agents Manager supports these REACH services as action types: **captions, tr
 
 Always call `actionDefinition/list` at runtime to get the current list of supported action types for your account, as new action types may be added over time.
 
-For the complete REACH API reference — including all available services, how to order tasks directly, enum values, and code examples — see **[KALTURA_REACH_API.md](KALTURA_REACH_API.md)**.
+For the complete REACH API reference — including all available services, how to order tasks directly, enum values, and code examples — see **[REACH API](KALTURA_REACH_API.md)**.
 
 
 ## Managing Agents via UI

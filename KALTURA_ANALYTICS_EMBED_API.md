@@ -78,15 +78,15 @@ window.addEventListener('message', function(e) {
     messageType: 'init',
     payload: {
       kalturaServer: {
-        uri: '$SERVICE_URL'.replace('/api_v3', ''),
+        uri: '$KALTURA_SERVICE_URL'.replace('/api_v3', ''),
         previewUIConfV7: parseInt('$PLAYER_ID')
       },
       cdnServers: {
         serverUri: 'http://cdnapi.kaltura.com',
         securedServerUri: 'https://cdnapisec.kaltura.com'
       },
-      ks: '$KS',
-      pid: parseInt('$PARTNER_ID'),
+      ks: '$KALTURA_KS',
+      pid: parseInt('$KALTURA_PARTNER_ID'),
       locale: 'en',
       live: { pollInterval: 30, healthNotificationsCount: 50 },
       menuConfig: { showMenu: false },
@@ -476,7 +476,7 @@ A full working example that handles the init handshake, dynamic iframe sizing, n
 
 <script>
   var analyticsIframe = document.getElementById('analytics');
-  var currentKs = '$KS';
+  var currentKs = '$KALTURA_KS';
 
   window.addEventListener('message', function(e) {
     if (!e.data || !e.data.messageType) return;
@@ -492,7 +492,7 @@ A full working example that handles the init handshake, dynamic iframe sizing, n
             kalturaServer: { uri: 'https://www.kaltura.com', previewUIConfV7: 56732362 },
             cdnServers: { securedServerUri: 'https://cdnapisec.kaltura.com' },
             ks: currentKs,
-            pid: parseInt('$PARTNER_ID'),
+            pid: parseInt('$KALTURA_PARTNER_ID'),
             locale: 'en',
             menuConfig: { showMenu: false },
             viewsConfig: viewsConfig

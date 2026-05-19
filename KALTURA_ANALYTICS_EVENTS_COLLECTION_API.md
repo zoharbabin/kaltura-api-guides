@@ -506,7 +506,7 @@ For transient failures (HTTP 500, network timeout):
 - Retry up to 3 times with exponential backoff (1s, 2s, 4s)
 - Queue events locally if the server is unreachable
 - Send queued events in order when connectivity resumes
-- Do not retry 400/401 errors (fix the request instead)
+- Retry only 5xx/timeout errors — 400/401 responses indicate a request problem to fix before resending
 
 
 # 12. Best Practices

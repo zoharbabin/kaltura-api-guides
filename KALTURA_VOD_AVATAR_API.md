@@ -3,7 +3,7 @@
 The VOD Avatar Studio lets you create pre-recorded avatar video presentations programmatically. You can select an AI avatar, write scenes with narration text, optionally use AI to compose scripts from existing video content, and generate a professional video of the avatar delivering the content. The generated video is saved as a standard Kaltura media entry.
 
 **Base URL:** `https://video-avatar.$REGION.ovp.kaltura.com/api/v1` (default region: `nvp1`)  
-**Auth:** `Authorization: Bearer $KS` header  
+**Auth:** `Authorization: Bearer $KALTURA_KS` header  
 **Format:** JSON request/response  
 
 **Widget URL:** `https://unisphere.nvp1.ovp.kaltura.com/v1` (for browser embedding)
@@ -83,7 +83,7 @@ All server-side API endpoints require a valid Kaltura Session (KS). A user-level
 
 ```bash
 # Generate a KS (type=0 user session is sufficient)
-KS=$(curl -s -X POST "$KALTURA_SERVICE_URL/service/session/action/start" \
+KALTURA_KS=$(curl -s -X POST "$KALTURA_SERVICE_URL/service/session/action/start" \
   -d "format=1" \
   -d "secret=$KALTURA_ADMIN_SECRET" \
   -d "partnerId=$KALTURA_PARTNER_ID" \
@@ -97,7 +97,7 @@ AVATAR_API="https://video-avatar.nvp1.ovp.kaltura.com/api/v1"
 
 Every request uses:
 - **Method:** POST  
-- **Header:** `Authorization: Bearer $KS`  
+- **Header:** `Authorization: Bearer $KALTURA_KS`  
 - **Header:** `Content-Type: application/json`  
 - **Body:** JSON  
 
@@ -108,7 +108,7 @@ Every request uses:
 - The partner account must have the VOD Avatar feature enabled. Use `partner/checkConfiguration` to verify:
   ```bash
   curl -s -X POST "$AVATAR_API/partner/checkConfiguration" \
-    -H "Authorization: Bearer $KS" \
+    -H "Authorization: Bearer $KALTURA_KS" \
     -H "Content-Type: application/json" \
     -d '{}'
   ```
@@ -131,7 +131,7 @@ Call `avatarTemplate/list` to get the full set of available AI characters. Each 
 
 ```bash
 curl -s -X POST "$AVATAR_API/avatarTemplate/list" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d '{}'
 ```
@@ -157,7 +157,7 @@ An avatar pairs a template with a background. The `upsert` action is idempotent 
 
 ```bash
 AVATAR_RESULT=$(curl -s -X POST "$AVATAR_API/avatar/upsert" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d '{
     "templateId": "jane",
@@ -212,7 +212,7 @@ Retrieve an existing avatar configuration by ID:
 
 ```bash
 curl -s -X POST "$AVATAR_API/avatar/get" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$AVATAR_ID\" }"
 ```
@@ -225,7 +225,7 @@ Get a PNG image showing how the avatar looks with its configured background. Use
 
 ```bash
 curl -s -X POST "$AVATAR_API/avatar/preview" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$AVATAR_ID\" }" \
   --output avatar_preview.png
@@ -244,7 +244,7 @@ The `video/add` endpoint creates a new project. You must provide a `name` and an
 
 ```bash
 VIDEO_RESULT=$(curl -s -X POST "$AVATAR_API/video/add" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{
     \"name\": \"Q1 Training Overview\",
@@ -369,7 +369,7 @@ The response returns the full video object. Key fields:
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/get" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$VIDEO_ID\" }"
 ```
@@ -380,7 +380,7 @@ Returns the full `VideoDto` including `status`, `entryId` (if generated), and al
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/update" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{
     \"id\": \"$VIDEO_ID\",
@@ -409,7 +409,7 @@ Scenes are editable only when status is `draft` or `composed` — the API return
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/list" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d '{
     "filter": { "orderBy": "-createdAt" },
@@ -443,7 +443,7 @@ curl -s -X POST "$AVATAR_API/video/list" \
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/delete" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$VIDEO_ID\" }"
 ```
@@ -457,7 +457,7 @@ The compose action uses AI to generate scenes from source video content. It anal
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/compose" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{
     \"id\": \"$VIDEO_ID\",
@@ -506,7 +506,7 @@ Preview the text-to-speech narration for a specific scene before generating the 
 ```bash
 # Returns audio/mpeg binary
 curl -s -X POST "$AVATAR_API/video/previewAudio" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$VIDEO_ID\", \"sceneId\": 0 }" \
   --output scene_preview.mp3
@@ -525,7 +525,7 @@ Use `previewAudioStream` for streaming playback instead of downloading the full 
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/previewAudioStream" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$VIDEO_ID\", \"sceneId\": 0 }" \
   --output scene_stream.mp3
@@ -540,7 +540,7 @@ Once scenes are ready (status is `draft` or `composed`), generate the final vide
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/generate" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$VIDEO_ID\" }"
 ```
@@ -560,7 +560,7 @@ The generate action:
 # Poll every 10 seconds until status is "ready" or an error
 while true; do
   RESULT=$(curl -s -X POST "$AVATAR_API/video/get" \
-    -H "Authorization: Bearer $KS" \
+    -H "Authorization: Bearer $KALTURA_KS" \
     -H "Content-Type: application/json" \
     -d "{ \"id\": \"$VIDEO_ID\" }")
 
@@ -596,7 +596,7 @@ If composition or generation fails, reset the status to allow editing and retryi
 
 ```bash
 curl -s -X POST "$AVATAR_API/video/resetStatus" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{ \"id\": \"$VIDEO_ID\" }"
 ```
@@ -618,7 +618,7 @@ AVATAR_API="https://video-avatar.nvp1.ovp.kaltura.com/api/v1"
 
 # 1. Create an avatar with a color background
 AVATAR=$(curl -s -X POST "$AVATAR_API/avatar/upsert" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d '{
     "templateId": "jane",
@@ -628,7 +628,7 @@ AVATAR_ID=$(echo "$AVATAR" | python3 -c "import sys,json; print(json.load(sys.st
 
 # 2. Create a video project with scenes
 VIDEO=$(curl -s -X POST "$AVATAR_API/video/add" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{
     \"name\": \"Product Update\",
@@ -648,21 +648,21 @@ VIDEO_ID=$(echo "$VIDEO" | python3 -c "import sys,json; print(json.load(sys.stdi
 
 # 3. Preview audio for the first scene
 curl -s -X POST "$AVATAR_API/video/previewAudio" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{\"id\": \"$VIDEO_ID\", \"sceneId\": 0}" \
   --output scene0_preview.mp3
 
 # 4. Generate the video
 curl -s -X POST "$AVATAR_API/video/generate" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{\"id\": \"$VIDEO_ID\"}"
 
 # 5. Poll until ready
 while true; do
   RESULT=$(curl -s -X POST "$AVATAR_API/video/get" \
-    -H "Authorization: Bearer $KS" \
+    -H "Authorization: Bearer $KALTURA_KS" \
     -H "Content-Type: application/json" \
     -d "{\"id\": \"$VIDEO_ID\"}")
   STATUS=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['status'])")
@@ -687,7 +687,7 @@ AVATAR_API="https://video-avatar.nvp1.ovp.kaltura.com/api/v1"
 
 # 1. Create (or reuse) an avatar
 AVATAR=$(curl -s -X POST "$AVATAR_API/avatar/upsert" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d '{
     "templateId": "jane",
@@ -700,7 +700,7 @@ AVATAR_ID=$(echo "$AVATAR" | python3 -c "import sys,json; print(json.load(sys.st
 #    - Scenes 1 and 4: b-roll from $SOURCE_ENTRY_A (e.g., a keynote recording)
 #    - Scenes 2 and 3: b-roll from $SOURCE_ENTRY_B (e.g., a tutorial)
 VIDEO=$(curl -s -X POST "$AVATAR_API/video/add" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{
     \"name\": \"Cloud AI Meets Neural Networks\",
@@ -740,21 +740,21 @@ VIDEO_ID=$(echo "$VIDEO" | python3 -c "import sys,json; print(json.load(sys.stdi
 
 # 3. Preview a b-roll scene's narration audio before committing to generation
 curl -s -X POST "$AVATAR_API/video/previewAudio" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{\"id\": \"$VIDEO_ID\", \"sceneId\": 1}" \
   --output scene1_preview.mp3
 
 # 4. Generate — skips compose entirely, goes straight from draft to generating
 curl -s -X POST "$AVATAR_API/video/generate" \
-  -H "Authorization: Bearer $KS" \
+  -H "Authorization: Bearer $KALTURA_KS" \
   -H "Content-Type: application/json" \
   -d "{\"id\": \"$VIDEO_ID\"}"
 
 # 5. Poll until ready
 while true; do
   RESULT=$(curl -s -X POST "$AVATAR_API/video/get" \
-    -H "Authorization: Bearer $KS" \
+    -H "Authorization: Bearer $KALTURA_KS" \
     -H "Content-Type: application/json" \
     -d "{\"id\": \"$VIDEO_ID\"}")
   STATUS=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['status'])")
