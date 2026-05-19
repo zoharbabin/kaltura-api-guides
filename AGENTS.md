@@ -19,7 +19,7 @@ Kaltura API Guides/
 ├── KALTURA_CONTENT_DELIVERY_API.md        # playManifest, serve, download, delivery profiles, CDN, access control
 ├── KALTURA_THUMBNAIL_API.md               # Dynamic thumbnail URL, thumbAsset, thumbParams
 ├── KALTURA_PLAYER_EMBED_GUIDE.md          # Player v7 embed (iframe + JS)
-├── KALTURA_REACH_API.md                   # Enrichment services marketplace: 22+ services, machine + human, 80+ languages
+├── KALTURA_REACH_API.md                   # Enrichment services marketplace: 23 service types, machine + human, 80+ languages
 ├── KALTURA_AGENTS_MANAGER_API.md          # Automated content processing
 ├── KALTURA_AI_GENIE_API.md                # Conversational AI search
 ├── KALTURA_EVENTS_PLATFORM_API.md         # Virtual events
@@ -170,7 +170,7 @@ Auth header formats differ by API:
 
 ## Common Kaltura API Patterns
 
-- **Entry statuses:** -2 (ERROR_IMPORTING), -1 (ERROR_CONVERTING), 0 (IMPORT), 1 (PRECONVERT), 2 (READY), 3 (DELETED), 4 (PENDING), 5 (MODERATE), 6 (BLOCKED), 7 (NO_CONTENT)
+- **Entry statuses:** -2 (ERROR_IMPORTING), -1 (ERROR_CONVERTING), 0 (IMPORT), 1 (PRECONVERT), 2 (READY), 3 (DELETED), 4 (PENDING), 5 (MODERATE), 6 (BLOCKED), 7 (NO_CONTENT). Plugin extensions: `virusScan.Infected`, `virusScan.ScanFailure`
 - **Upload lifecycle:** `uploadToken.add` → `uploadToken.upload` → `media.add` → `media.addContent`
 - **Polling pattern:** Check `baseEntry.get` for `status=2` with interval/timeout
 - **Cascade behavior:** Deleting a parent entry cascades to children — use `baseEntry.list` with `parentEntryIdEqual` to discover children first
@@ -199,7 +199,7 @@ Agents building on Kaltura should use platform services rather than reimplementi
 
 | Need | Use Kaltura Service | Guide |
 |------|-------------------|-------|
-| Content enrichment (any type) | REACH API (22+ services, machine + human, 80+ languages) | `KALTURA_REACH_API.md` |
+| Content enrichment (any type) | REACH API (23 service types, machine + human, 80+ languages) | `KALTURA_REACH_API.md` |
 | Captions, translation, dubbing | REACH API (specific enrichment services) | `KALTURA_REACH_API.md` |
 | Content moderation (AI) | REACH API (serviceFeature=15) + Moderation API | `KALTURA_MODERATION_API.md` |
 | Auto-process new uploads | Agents Manager (trigger + action rules) | `KALTURA_AGENTS_MANAGER_API.md` |
@@ -284,20 +284,63 @@ Releases are manual via release-please. Trigger the release workflow (`gh workfl
 ## Adding a New Guide
 
 1. **Research.** Explore the API surface — endpoints, params, response schemas, auth. Test calls live.
-2. **Verify accessibility.** Test every action you plan to document with a customer account KS. Exclude actions that return `SERVICE_FORBIDDEN` or require partner-level permissions beyond standard KS privileges. `disableentitlement` bypasses content entitlement checks; partner-level service restrictions remain in force regardless.
-3. **Write the guide.** Follow the header block, numbered sections, curl examples, Related Guides structure. Include a `<!-- Sections: ... -->` HTML comment after the header block listing all section numbers and titles.
-4. **Create the test file.** `tests/test_{name}.py` — cover every documented endpoint with real API calls.
-5. **Run tests.** All tests must pass against the live API. Tests must succeed with actual successful API responses — not by catching expected errors.
-6. **Cross-reference.** Add to Related Guides sections of existing guides where relevant. Link only to published guides in this repository.
-7. **Update GUIDE_MAP.md.** Add the new guide to the reading order tiers, dependency graph, and decision tree. Run `python3 scripts/validate_guide_map.py` to verify all cross-references are valid.
-8. **Update PLAN.md.** Add a row to the Completed Guides table.
-9. **Commit with conventional format.** Use `feat(service-name): add Service Name API guide with N E2E tests`. See Commit Messages & Versioning above.
-10. **Iterate.** If tests reveal undocumented behavior, update the guide to match reality.
+2. **Verify enums against schema.** For any enum or status code you plan to document, verify the complete value set against the generated client libraries (PHP/TypeScript) or the XML schema. For microservices, verify against the service's own OpenAPI spec. Include all values — do not rely on other guides or documentation wikis as authoritative sources. See the Schema Verification section below.
+3. **Verify accessibility.** Test every action you plan to document with a customer account KS. Exclude actions that return `SERVICE_FORBIDDEN` or require partner-level permissions beyond standard KS privileges. `disableentitlement` bypasses content entitlement checks; partner-level service restrictions remain in force regardless.
+4. **Write the guide.** Follow the header block, numbered sections, curl examples, Related Guides structure. Include a `<!-- Sections: ... -->` HTML comment after the header block listing all section numbers and titles.
+5. **Create the test file.** `tests/test_{name}.py` — cover every documented endpoint with real API calls.
+6. **Run tests.** All tests must pass against the live API. Tests must succeed with actual successful API responses — not by catching expected errors.
+7. **Cross-reference.** Add to Related Guides sections of existing guides where relevant. Link only to published guides in this repository.
+8. **Update GUIDE_MAP.md.** Add the new guide to the reading order tiers, dependency graph, and decision tree. Run `python3 scripts/validate_guide_map.py` to verify all cross-references are valid.
+9. **Update PLAN.md.** Add a row to the Completed Guides table.
+10. **Commit with conventional format.** Use `feat(service-name): add Service Name API guide with N E2E tests`. See Commit Messages & Versioning above.
+11. **Iterate.** If tests reveal undocumented behavior, update the guide to match reality.
 
 ### Naming Convention
 
 - Guide: `KALTURA_{SERVICE_NAME}_API.md` (or `_GUIDE.md` for non-API docs)
 - Test: `tests/test_{service_name}_api.py`
+
+## Schema Verification
+
+Kaltura's API surface spans two architectures with different schema sources:
+
+### Foundation API (v3) — `www.kaltura.com/api_v3/*`
+
+The XML schema at `https://www.kaltura.com/api_v3/api_schema.php` is the **authoritative source** for all v3 services, enums, object types, and action signatures. It covers ~142 services and 664 enums.
+
+**Authoritative sources (in priority order):**
+1. Live XML schema: `https://www.kaltura.com/api_v3/api_schema.php` (large — use targeted queries or generated clients)
+2. Generated PHP client enums: `https://raw.githubusercontent.com/kaltura/KalturaGeneratedAPIClientsPHP/master/KalturaEnums.php` + `KalturaPlugins/` directory
+3. Generated TypeScript client: `https://raw.githubusercontent.com/kaltura/KalturaGeneratedAPIClientsTypescript/master/src/api/types/`
+
+**When writing or editing a guide that documents enum values:**
+- Verify every enum table against the generated client libraries (PHP or TypeScript)
+- Include ALL values from the schema — plugin-contributed values use dot-notation strings (e.g., `virusScan.Infected`)
+- Note that many "integer" enums are technically string enums in the schema (KalturaEntryStatus, KalturaEntryType, KalturaCaptionType, KalturaReportType)
+- When an enum has plugin-contributed values beyond the core set, note this in the guide
+
+**When tests validate enum completeness:**
+- Define a `DOCUMENTED_*` set constant at the top of the test file
+- Include ALL schema values in the set (the test catches undocumented values appearing in live responses)
+- Run `vendorCatalogItem.list` or equivalent list actions without filters to discover all active values
+
+### Microservices — Separate OpenAPI Specs
+
+Modern JSON-based microservices (Events Platform, Agents Manager, AI Genie, Auth Broker, User Profile, Messaging, App Registry, Content Lab, Gamification) are NOT in the v3 XML schema. Each has its own OpenAPI spec in its source repository.
+
+**For microservice guides:**
+- Verify against the service's own OpenAPI/Swagger spec (in the service repo or provided by the team)
+- These services use Bearer/KS auth headers and JSON bodies — different from v3 form-encoded
+- Enum values and object schemas are defined in each service's own spec
+
+### Verification Checklist (for any guide with enum tables)
+
+1. Identify the enum name (e.g., `KalturaEntryStatus`, `KalturaVendorServiceFeature`)
+2. Fetch the generated TypeScript or PHP client file for that enum
+3. Compare ALL values against the guide's table — ensure nothing is missing or incorrect
+4. For string enums with plugin values: document both the numeric core values and string plugin values
+5. Update the test file's `DOCUMENTED_*` set to match the complete enum
+6. Run the test to confirm no undocumented values appear in live responses
 
 ## Detailed Reference
 

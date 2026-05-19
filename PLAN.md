@@ -133,7 +133,7 @@ Drop folder lifecycle, file tracking, folder types (LOCAL, FTP, SFTP, S3, WEBEX,
 
 ### AI & Intelligence
 - **AI Genie** — RAG-based search, threads, streaming, feedback
-- **REACH** — 22+ enrichment services, machine + human, 80+ languages
+- **REACH** — 23 enrichment service types, machine + human, 80+ languages
 - **Agents Manager** — Automated content-processing (triggers + actions)
 - **Avatar** — Conversational + VOD avatars
 

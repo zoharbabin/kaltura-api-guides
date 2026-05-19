@@ -20,6 +20,8 @@ The audience is an AI agent that reads top-to-bottom and executes. Every guide m
 
 5. **Release workflow.** Releases are manual. When the user asks to release, trigger the workflow (`gh workflow run release.yml`), wait for the release-please PR to appear, then merge it with `gh pr merge --merge --admin --delete-branch`. Pull and prune locally after.
 
+6. **Verify enums against schema.** When documenting enum values, status codes, or type constants for v3 APIs, verify against the generated client libraries at `github.com/kaltura/KalturaGeneratedAPIClientsPHP` or `github.com/kaltura/KalturaGeneratedAPIClientsTypescript`. For microservices (Auth Broker, Events Platform, Agents Manager, etc.), verify against the service's own OpenAPI spec. The v3 XML schema at `api_schema.php` covers only foundation APIs — microservices have independent schemas.
+
 ## Terminology (Official — from Kaltura Glossary)
 
 Use approved product names in all user/customer-facing text:

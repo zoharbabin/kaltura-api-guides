@@ -30,7 +30,7 @@ EVT_SVC = "eventnotification_eventnotificationtemplate"
 
 # ── Documented enums (from KALTURA_REACH_API.md) ──
 
-DOCUMENTED_SERVICE_FEATURES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23}
+DOCUMENTED_SERVICE_FEATURES = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}
 DOCUMENTED_SERVICE_TYPES = {1, 2}
 DOCUMENTED_OUTPUT_FORMATS = {1, 2, 3}
 DOCUMENTED_TASK_STATUSES = {1, 2, 3, 4, 5, 6, 7, 8, 9}

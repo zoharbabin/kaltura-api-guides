@@ -656,6 +656,63 @@ def main():
     runner.run_test("report.getTable — playerRelatedInteractions", test_player_interactions)
 
     # ════════════════════════════════════════════
+    # Phase 11b: QoE & Platform-Specific Reports
+    # ════════════════════════════════════════════
+    def test_qoe_overview():
+        """report.getTable — QOE_OVERVIEW (30001) for player quality metrics."""
+        try:
+            result = kaltura_post("report", "getTable", {
+                "reportType": 30001,  # QOE_OVERVIEW
+                "reportInputFilter[objectType]": "KalturaEndUserReportInputFilter",
+                "reportInputFilter[fromDate]": FROM_TIMESTAMP,
+                "reportInputFilter[toDate]": TO_TIMESTAMP,
+                "pager[pageSize]": 10,
+                "pager[pageIndex]": 1,
+                "responseOptions[objectType]": "KalturaReportResponseOptions",
+                "responseOptions[delimiter]": "|",
+            })
+            assert result.get("objectType") == "KalturaReportTable", f"Unexpected response: {result}"
+            if result.get("header"):
+                print(f"    QoE overview header: {result['header'][:80]}...")
+            else:
+                print(f"    No QoE data (expected for accounts without QoE provisioning)")
+        except Exception as e:
+            err_str = str(e)
+            if "REPORT_NOT_FOUND" in err_str or "INVALID_REPORT" in err_str:
+                print(f"    QoE reports require account provisioning (not enabled): {err_str[:80]}")
+            else:
+                raise
+
+    runner.run_test("report.getTable — QOE_OVERVIEW (30001)", test_qoe_overview)
+
+    def test_immersive_agents_highlights():
+        """report.getTable — IMMERSIVE_AGENTS_HIGHLIGHTS (80001) for avatar analytics."""
+        try:
+            result = kaltura_post("report", "getTable", {
+                "reportType": 80001,  # IMMERSIVE_AGENTS_HIGHLIGHTS
+                "reportInputFilter[objectType]": "KalturaEndUserReportInputFilter",
+                "reportInputFilter[fromDate]": FROM_TIMESTAMP,
+                "reportInputFilter[toDate]": TO_TIMESTAMP,
+                "pager[pageSize]": 10,
+                "pager[pageIndex]": 1,
+                "responseOptions[objectType]": "KalturaReportResponseOptions",
+                "responseOptions[delimiter]": "|",
+            })
+            assert result.get("objectType") == "KalturaReportTable", f"Unexpected response: {result}"
+            if result.get("header"):
+                print(f"    Immersive agents header: {result['header'][:80]}...")
+            else:
+                print(f"    No avatar analytics data")
+        except Exception as e:
+            err_str = str(e)
+            if "REPORT_NOT_FOUND" in err_str or "INVALID_REPORT" in err_str:
+                print(f"    Immersive agents reports require provisioning: {err_str[:80]}")
+            else:
+                raise
+
+    runner.run_test("report.getTable — IMMERSIVE_AGENTS_HIGHLIGHTS (80001)", test_immersive_agents_highlights)
+
+    # ════════════════════════════════════════════
     # Phase 12: Error Cases
     # ════════════════════════════════════════════
     def test_error_missing_dates():

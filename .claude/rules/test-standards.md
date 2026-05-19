@@ -60,7 +60,7 @@ if __name__ == "__main__":
 - **Interactive cleanup.** Check `sys.stdin.isatty()` before `input()` — non-interactive shells get EOF immediately.
 - **Polling for async operations.** Use `_wait_for_ready()` with configurable `POLL_INTERVAL` and `POLL_TIMEOUT` when waiting for entry processing (status=2 READY).
 - **Direct MP4 URLs for imports.** Use direct MP4 download URLs with `addFromUrl`, not playManifest redirect URLs.
-- **Entry status reference.** `-2`=ERROR_IMPORTING, `-1`=ERROR_CONVERTING, `0`=IMPORT, `1`=PRECONVERT, `2`=READY, `3`=DELETED, `4`=PENDING, `5`=MODERATE, `6`=BLOCKED, `7`=NO_CONTENT. Note: 7 is NO_CONTENT (draft/empty), 3 is DELETED.
+- **Entry status reference.** `-2`=ERROR_IMPORTING, `-1`=ERROR_CONVERTING, `0`=IMPORT, `1`=PRECONVERT, `2`=READY, `3`=DELETED, `4`=PENDING, `5`=MODERATE, `6`=BLOCKED, `7`=NO_CONTENT, `virusScan.Infected`, `virusScan.ScanFailure`. Note: 7 is NO_CONTENT (draft/empty), 3 is DELETED. KalturaEntryStatus is a string enum — plugin values use dot-notation.
 
 ## Accessibility Validation
 
@@ -68,6 +68,17 @@ if __name__ == "__main__":
 - **Test with a standard customer admin KS.** `disableentitlement` bypasses content entitlement checks; partner-level service restrictions (`SERVICE_FORBIDDEN`) remain in force regardless. Actions that return `SERVICE_FORBIDDEN` with `disableentitlement` are internal-only.
 - **Flag suspicious patterns.** Writing `if "FORBIDDEN" in err: print("expected")` means the feature is inaccessible — remove it from the guide rather than excusing it in the test.
 - **Verify before documenting.** Test every action you plan to document before writing the guide section. Verify accessibility first, then write — this avoids rework from discovering inaccessible actions after the guide is written.
+
+## Enum Validation
+
+For guides that document enum values (statuses, types, feature flags):
+
+- **Define `DOCUMENTED_*` sets** at the top of the test file listing all values from the guide's tables.
+- **Add a validation test** that lists real resources and checks all returned enum values exist in the documented set.
+- **Source of truth:** Generated client libraries at `github.com/kaltura/KalturaGeneratedAPIClientsPHP` (enums in `KalturaEnums.php` + `KalturaPlugins/` directory) and `github.com/kaltura/KalturaGeneratedAPIClientsTypescript` (`src/api/types/`).
+- **String vs integer:** Many Kaltura enums that appear numeric are actually string enums in the schema (values like `"2"` or `"virusScan.Infected"`). Form-encoded parameters handle this transparently, but tests comparing values should use the correct type.
+- **Plugin-contributed values:** Enums extended by plugins use dot-notation (e.g., `cuePointType = "adCuePoint.Ad"`). These are authoritative — include them in the documented set.
+- **v3 XML schema** at `https://www.kaltura.com/api_v3/api_schema.php` covers foundation APIs only. Microservices (Events Platform, Agents Manager, AI Genie, Auth Broker, etc.) have their own OpenAPI specs.
 
 ## Environment Configuration
 

@@ -14,7 +14,7 @@ REACH services can be triggered manually via the API, automatically via REACH pr
 
 # 1. When to Use
 
-Use REACH when your application needs any form of content enrichment — from making videos searchable and accessible, to repurposing long-form content into short clips, to moderating uploads at scale. REACH provides a single unified API for 22+ enrichment services across 80+ languages, delivered by both machine/AI engines and human professional vendors.
+Use REACH when your application needs any form of content enrichment — from making videos searchable and accessible, to repurposing long-form content into short clips, to moderating uploads at scale. REACH provides a single unified API for 23 enrichment service types across 80+ languages, delivered by both machine/AI engines and human professional vendors.
 
 **Concrete scenarios where REACH is the right approach:**
 
@@ -143,6 +143,7 @@ The typical flow: discover available catalog items for your account, then create
 | 17 | SENTIMENT_ANALYSIS | Sentiment and tone analysis of spoken content |
 | 18 | DOCUMENT_ENRICHMENT | AI enrichment for document-type entries |
 | 19 | SIGN_LANGUAGE | Sign language video (ASL, BSL) |
+| 20 | SPEECH_TO_VIDEO | Text-to-video synthesis (script to avatar video) |
 | 21 | IMMERSIVE_AGENT_CALL | Voice-based conversational AI agent interaction |
 | 22 | IMMERSIVE_AGENT_CHAT | Text-based conversational AI agent interaction |
 | 23 | AVATAR_VOD | Pre-recorded avatar video generation from scripts |

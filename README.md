@@ -62,7 +62,7 @@ KALTURA_VIDEO_PORTAL_BASE_URL=https://your-site.events.kaltura.com
 | [Content Delivery API](KALTURA_CONTENT_DELIVERY_API.md) | playManifest, raw serve, download, delivery profiles, CDN, access control | 13 tests |
 | [Thumbnail & Image API](KALTURA_THUMBNAIL_API.md) | Dynamic thumbnail URL (31 params), thumbAsset CRUD, thumbParams | 18 tests |
 | [Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md) | Player v7 embed (iframe + JavaScript) | 14 tests |
-| [REACH API](KALTURA_REACH_API.md) | Governed enrichment services marketplace: captions, translation, moderation, 22+ services | 35 tests |
+| [REACH API](KALTURA_REACH_API.md) | Governed enrichment services marketplace: captions, translation, moderation, 23 service types | 35 tests |
 | [REACH — AI Clips](KALTURA_CONTENT_LAB_API.md) | AI clip generation workflow via REACH enrichment services | 15 tests |
 | [Agents Manager API](KALTURA_AGENTS_MANAGER_API.md) | Automated content processing agents | 15 tests |
 | [AI Genie API](KALTURA_AI_GENIE_API.md) | Conversational AI search and RAG | 37 tests |

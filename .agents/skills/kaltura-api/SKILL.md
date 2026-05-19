@@ -74,7 +74,7 @@ Some newer services use JSON bodies with auth headers:
 
 1. **Upload** content via chunked upload or import-from-URL
 2. **Poll** for entry status to reach READY (status=2)
-3. **Enrich** with REACH services (captions, translation, moderation, 22+ services) or Agents
+3. **Enrich** with REACH services (captions, translation, moderation, 23 service types) or Agents
 4. **Search** your content library with eSearch
 5. **Embed** the player in your application
 
@@ -151,7 +151,7 @@ Read the relevant guide when you need to implement a specific capability:
 
 ### AI Services
 
-- **[REACH API](../../../KALTURA_REACH_API.md)** — Governed enrichment services marketplace: 22+ service types (captions, translation, moderation, dubbing, AI clips, quiz, sentiment analysis, and more) delivered by Machine/AI and Human Professional vendors across 80+ languages. Includes credit management, vendor abstraction, content deletion policies, and REACH Automation Rules (Boolean event conditions, category conditions, always-on) for automatic processing.
+- **[REACH API](../../../KALTURA_REACH_API.md)** — Governed enrichment services marketplace: 23 service types (captions, translation, moderation, dubbing, AI clips, quiz, sentiment analysis, and more) delivered by Machine/AI and Human Professional vendors across 80+ languages. Includes credit management, vendor abstraction, content deletion policies, and REACH Automation Rules (Boolean event conditions, category conditions, always-on) for automatic processing.
 
 - **[Agents Manager API](../../../KALTURA_AGENTS_MANAGER_API.md)** — Create automated content-processing agents with triggers ("when a new entry is uploaded") and actions ("generate captions, then translate to Spanish"). Hands-free processing at scale.
 

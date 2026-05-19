@@ -654,6 +654,10 @@ Each `KalturaAssetParamsResourceContainer` maps:
 | 5 | MODERATE | Awaiting moderation |
 | 6 | BLOCKED | Blocked by admin |
 | 7 | NO_CONTENT | Entry created, no file attached |
+| virusScan.Infected | INFECTED | File failed virus scan (requires virusScan plugin) |
+| virusScan.ScanFailure | SCAN_FAILURE | Virus scan could not complete |
+
+`KalturaEntryStatus` is a string enum. Core values are numeric strings (`"-2"` through `"7"`), and the virusScan plugin contributes dot-notation values. In practice, passing integer `2` or string `"2"` both work for core statuses in filter parameters. Live stream media types (201-204: LIVE_STREAM_FLASH, LIVE_STREAM_WINDOWS_MEDIA, LIVE_STREAM_REAL_MEDIA, LIVE_STREAM_QUICKTIME) are created via the `liveStream` service — they use `KalturaMediaType`, not entry status.
 
 ## 5.17 Flavor Asset Statuses
 

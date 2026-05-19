@@ -679,7 +679,35 @@ The `reportType` parameter uses **integer IDs** (KalturaReportType enum). Pass t
 | 3009 | Session Attendance (per-session attendee tracking) |
 | 3010 | Certificate of Completion (attendance-based certificates) |
 
-## 12.3 Multi-Account Variants
+## 12.3 Quality of Experience (QoE) Reports
+
+QoE reports (IDs 30001-30064) provide player performance analytics: buffering, errors, stream quality, and engagement correlated with technical delivery metrics. Requires QoE analytics provisioned on your account (one-time setup by your Kaltura account team).
+
+| Range | Category | Description |
+|-------|----------|-------------|
+| `30001` | QOE_OVERVIEW | Combined quality overview |
+| `30002`-`30013` | QOE_EXPERIENCE | Experience metrics by platform, country, region, city, browser, OS, player version, entry, ISP |
+| `30014`-`30025` | QOE_ENGAGEMENT | Engagement metrics by same dimensions |
+| `30026`-`30037` | QOE_STREAM_QUALITY | Stream quality by same dimensions |
+| `30038`-`30048` | QOE_ERROR_TRACKING | Error tracking by codes, platform, browser, OS, player, entry |
+| `30047`-`30048` | QOE_SESSION_FLOW | VOD and live session flow analysis |
+| `30049`-`30064` | Custom Variable & App Version | QoE metrics broken down by custom var 1/2/3 and application version |
+
+Each category follows a consistent dimensional pattern — a base report plus variants sliced by platform, geography, browser, OS, player version, entry, ISP, custom variables, and application version.
+
+## 12.4 Additional Platform Reports
+
+| ID | Category | Description |
+|----|----------|-------------|
+| `70001` | CNC_PARTICIPATION | Chat & Collaborate participation metrics |
+| `80001` | IMMERSIVE_AGENTS_HIGHLIGHTS | Conversational avatar session highlights |
+| `80002` | IMMERSIVE_AGENTS_MESSAGES_OVERTIME | Message volume over time |
+| `80003` | IMMERSIVE_AGENTS_MESSAGE_FEEDBACK | User feedback on agent responses |
+| `80004` | IMMERSIVE_AGENTS_TOP_SOURCES | Most-referenced content sources |
+| `80005` | IMMERSIVE_AGENTS_AVATAR_SESSIONS | Avatar session details |
+| `80006` | IMMERSIVE_AGENTS_RESPONSE_EXPERIENCE_TYPES | Response modality breakdown |
+
+## 12.5 Multi-Account Variants
 
 Every VOD report has a multi-account counterpart with IDs in the 20000 range (e.g., `20001` = multi-account Content Dropoff, `20005` = multi-account Platforms, `20011` = multi-account Unique Users Play). Parent accounts use these variants to aggregate analytics across child accounts.
 

@@ -35,7 +35,7 @@ Guides for getting content into the platform and enriching it with AI.
 | [Annotations](KALTURA_ANNOTATIONS_API.md) | Editing & Personalization | Annotations, threaded replies, hotspots, searchableOnEntry |
 | [Ad Cue Points](KALTURA_AD_CUE_POINTS_API.md) | Editing & Personalization | VAST/VPAID ad insertion: pre-roll, mid-roll, overlay |
 | [Code, Event & Session Cue Points](KALTURA_CODE_CUE_POINTS_API.md) | Editing & Personalization | Code markers, view-change, forceStop, event/session cue points |
-| [REACH API](KALTURA_REACH_API.md) | AI Enrichment | Governed enrichment services marketplace: captions, translation, moderation, AI analysis, 22+ services |
+| [REACH API](KALTURA_REACH_API.md) | AI Enrichment | Governed enrichment services marketplace: captions, translation, moderation, AI analysis, 23 service types |
 | [Agents Manager](KALTURA_AGENTS_MANAGER_API.md) | AI Enrichment | Automated content-processing rules and workflows |
 | [AI Genie](KALTURA_AI_GENIE_API.md) | AI Enrichment | Conversational AI / RAG over video library |
 

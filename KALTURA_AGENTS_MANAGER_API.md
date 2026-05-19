@@ -460,7 +460,7 @@ The response includes the full agent object with inline trigger and actions.
 
 ## Kaltura REACH — The Services Behind Agent Actions
 
-Many of the actions available to agents — captions, dubbing, translations, moderation, and content enrichment — are powered by **Kaltura REACH**, Kaltura's governed marketplace for content enrichment services. REACH provides a unified API for 22+ service types, delivered by both Machine/AI engines and Human Professional vendors, with centralized credit management, moderation workflows, and vendor abstraction.
+Many of the actions available to agents — captions, dubbing, translations, moderation, and content enrichment — are powered by **Kaltura REACH**, Kaltura's governed marketplace for content enrichment services. REACH provides a unified API for 23 service types, delivered by both Machine/AI engines and Human Professional vendors, with centralized credit management, moderation workflows, and vendor abstraction.
 
 When you call the Action Definitions API, the `catalogItemId` values returned for actions like `captions` and `translation` map directly to REACH vendor catalog items. Each defines the vendor, quality tier (machine vs. human), language, and turnaround time.
 
