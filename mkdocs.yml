@@ -91,7 +91,6 @@ nav:
       - User Management: KALTURA_USER_MANAGEMENT_API.md
   - AI Services:
       - REACH API: KALTURA_REACH_API.md
-      - "REACH — AI Clips": KALTURA_CONTENT_LAB_API.md
       - Agents Manager: KALTURA_AGENTS_MANAGER_API.md
       - AI Genie: KALTURA_AI_GENIE_API.md
   - Playback & Experiences:
@@ -100,7 +99,7 @@ nav:
       - Unisphere Framework: KALTURA_UNISPHERE_FRAMEWORK_API.md
       - Genie Widget: KALTURA_GENIE_WIDGET_API.md
       - Media Manager: KALTURA_MEDIA_MANAGER_API.md
-      - Content Lab Widget: KALTURA_CONTENT_LAB_API.md
+      - Content Lab Widget: KALTURA_CONTENT_LAB_WIDGET_API.md
       - Agents Widget: KALTURA_AGENTS_WIDGET_API.md
       - VOD Avatar Studio: KALTURA_VOD_AVATAR_API.md
       - Conversational Avatar: KALTURA_CONVERSATIONAL_AVATAR_API.md
