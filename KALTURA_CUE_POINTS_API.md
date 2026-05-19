@@ -432,7 +432,7 @@ Ad, Annotation, Code, Thumb, and Quiz cue points support custom metadata profile
 - **[eSearch API](KALTURA_ESEARCH_API.md)** — Full search syntax, `KalturaESearchCuePointItem` details
 - **[Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md)** — Player v7 setup, plugin configuration
 - **[REACH API](KALTURA_REACH_API.md)** — AI-powered chaptering (serviceFeature=5), quiz generation (serviceFeature=12)
-- **[Content Lab API](KALTURA_CONTENT_LAB_API.md)** — AI-generated chapters and quizzes
+- **[Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md)** — AI-generated chapters and quizzes
 - **[Captions & Transcripts](KALTURA_CAPTIONS_AND_TRANSCRIPTS_API.md)** — Caption assets (related but separate from cue points)
 - **[Multi-Stream API](KALTURA_MULTI_STREAM_API.md)** — Dual-screen entries with slide/camera sync
 - **[Custom Metadata API](KALTURA_CUSTOM_METADATA_API.md)** — Attaching structured metadata to cue points

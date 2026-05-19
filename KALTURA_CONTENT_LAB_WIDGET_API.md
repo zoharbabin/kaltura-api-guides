@@ -1,6 +1,6 @@
-# Kaltura Content Lab API
+# Kaltura Content Lab Widget API
 
-Content Lab is a Unisphere widget for AI-powered content repurposing. It generates summaries, chapters, clips, quizzes, and other derived content from video and audio entries. The widget renders as a drawer panel and integrates with Kaltura REACH services for AI processing.
+Content Lab is a **Unisphere widget** for AI-powered content repurposing. It provides an embeddable drawer UI that generates summaries, chapters, clips, quizzes, and other derived content from video and audio entries. The widget orchestrates Kaltura REACH services — for the backend API (ordering enrichment tasks directly without the widget), see [REACH API](KALTURA_REACH_API.md).
 
 **Base URL:** `https://unisphere.nvp1.ovp.kaltura.com/v1` (US region)  
 **Auth:** KS passed via runtime settings  

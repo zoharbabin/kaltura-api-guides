@@ -923,7 +923,7 @@ workspace.kill();
 - **Write at least one full sentence per scene.** The API validates narration text at `video/add` time — provide at least one complete sentence (~4+ words) per scene to produce sufficient TTS audio (1.5+ seconds)  
 - **Budget narration for b-roll scenes.** TTS speaks at ~2.4 words/second. For b-roll scenes, keep word count below `(clip_duration - startTime) × 2.1` to leave a safety margin. Use `previewAudio` and `ffprobe` to verify actual TTS duration for scenes close to the budget  
 - **Use long KS expiry for generation.** Generation can take 10–20 minutes for complex videos. Use 86400s (24h) expiry to ensure the session remains valid throughout  
-- **Process generated videos.** The resulting Kaltura entry can be enriched via [REACH](KALTURA_REACH_API.md) (captions, translation), [Content Lab](KALTURA_CONTENT_LAB_API.md) (chapters, summaries), or [Agents](KALTURA_AGENTS_MANAGER_API.md) (automated workflows)  
+- **Process generated videos.** The resulting Kaltura entry can be enriched via [REACH](KALTURA_REACH_API.md) (captions, translation), [Content Lab](KALTURA_CONTENT_LAB_WIDGET_API.md) (chapters, summaries), or [Agents](KALTURA_AGENTS_MANAGER_API.md) (automated workflows)  
 - **Use HTTPS.** The Unisphere loader and all widget bundles require HTTPS  
 
 ## Multi-Region CDN
@@ -944,6 +944,6 @@ workspace.kill();
 - **[Unisphere Framework](KALTURA_UNISPHERE_FRAMEWORK_API.md)** — The micro-frontend framework that powers the widget embed: loader, workspace lifecycle, services  
 - **[Experience Components Overview](KALTURA_EXPERIENCE_COMPONENTS_API.md)** — Index of all embeddable components with shared guidelines  
 - **[REACH API](KALTURA_REACH_API.md)** — Add captions and transcripts to source entries before AI composition, or enrich generated avatar videos  
-- **[Content Lab API](KALTURA_CONTENT_LAB_API.md)** — Generate summaries, chapters, or clips from avatar videos  
+- **[Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md)** — Generate summaries, chapters, or clips from avatar videos  
 - **[Session Guide](KALTURA_SESSION_GUIDE.md)** — KS generation and privilege management  
 - **[AppTokens API](KALTURA_APPTOKENS_API.md)** — Production token management for secure KS generation  

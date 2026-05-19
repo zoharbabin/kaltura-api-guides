@@ -46,7 +46,7 @@ Kaltura API Guides/
 ├── KALTURA_CNC_API.md                     # Chat & Collaborate (real-time chat, Q&A, polls)
 ├── KALTURA_GENIE_WIDGET_API.md            # Conversational AI search widget
 ├── KALTURA_MEDIA_MANAGER_API.md           # Browsable media library (select, upload, manage entries)
-├── KALTURA_CONTENT_LAB_API.md             # AI content repurposing (summaries, chapters, clips, quizzes)
+├── KALTURA_CONTENT_LAB_WIDGET_API.md             # AI content repurposing (summaries, chapters, clips, quizzes)
 ├── KALTURA_AGENTS_WIDGET_API.md           # Automated content-processing agent management UI
 ├── KALTURA_VOD_AVATAR_API.md              # Pre-recorded avatar video generation from scripts
 ├── KALTURA_ANALYTICS_EMBED_API.md         # Embeddable analytics dashboards via iframe

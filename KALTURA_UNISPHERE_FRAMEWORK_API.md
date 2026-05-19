@@ -225,7 +225,7 @@ All widgets use the `unisphere.widget.*` naming convention.
 |--------|-----------|---------|-------|
 | `unisphere.widget.genie` | `chat`, `avatar`, `flashcards-tool`, `followups-tool`, `sources-tool` | AI conversational search + avatar | [Genie Widget](KALTURA_GENIE_WIDGET_API.md) |
 | `unisphere.widget.media-manager` | `kaltura-items-media-manager` | Browse, select, upload entries | [Media Manager](KALTURA_MEDIA_MANAGER_API.md) |
-| `unisphere.widget.content-lab` | `application`, `ai-consent` | AI content repurposing | [Content Lab](KALTURA_CONTENT_LAB_API.md) |
+| `unisphere.widget.content-lab` | `application`, `ai-consent` | AI content repurposing | [Content Lab](KALTURA_CONTENT_LAB_WIDGET_API.md) |
 | `unisphere.widget.agents` | `manager` | Agent management drawer | [Agents Widget](KALTURA_AGENTS_WIDGET_API.md) |
 | `unisphere.widget.vod-avatars` | `studio` | Pre-recorded avatar video studio | [VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md) |
 | `unisphere.widget.notifications` | `notifications` | Toast, alert, and overlay notifications | — |
@@ -624,7 +624,7 @@ Each region serves its own loader, runtime.json manifest, and widget bundles. Pa
 # 17. Related Guides
 
 - **[Media Manager API](KALTURA_MEDIA_MANAGER_API.md)** — Browsable media library widget: select, upload, manage entries  
-- **[Content Lab API](KALTURA_CONTENT_LAB_API.md)** — AI content repurposing widget: summaries, chapters, clips, quizzes  
+- **[Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md)** — AI content repurposing widget: summaries, chapters, clips, quizzes  
 - **[Agents Widget API](KALTURA_AGENTS_WIDGET_API.md)** — Agent management drawer: create and configure automated content-processing agents  
 - **[VOD Avatar Studio API](KALTURA_VOD_AVATAR_API.md)** — Pre-recorded avatar video generation from scripts  
 - **[Genie Widget API](KALTURA_GENIE_WIDGET_API.md)** — Conversational AI search widget with player integration  

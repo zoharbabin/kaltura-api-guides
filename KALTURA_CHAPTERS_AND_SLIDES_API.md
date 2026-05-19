@@ -223,7 +223,7 @@ plugins: {
 # 11. REACH / Content Lab Chapter Generation
 
 - **REACH API** — Order a chaptering task (serviceFeature=5) via `entryVendorTask.add`. AI analyzes video content and generates chapter cue points at topic boundaries. See [REACH API](KALTURA_REACH_API.md).
-- **Content Lab** — The Content Lab widget provides a UI for AI-generated chapters. See [Content Lab API](KALTURA_CONTENT_LAB_API.md).
+- **Content Lab** — The Content Lab widget provides a UI for AI-generated chapters. See [Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md).
 
 
 # 12. Searching Chapters and Slides
@@ -254,7 +254,7 @@ Chapter titles and slide OCR text are indexed in eSearch. Use `KalturaESearchCue
 - **[Cue Points Hub](KALTURA_CUE_POINTS_API.md)** — Base cue point concepts, shared CRUD, eSearch integration, bulk operations
 - **[Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md)** — Player v7 setup, navigation and dualscreen plugins
 - **[REACH API](KALTURA_REACH_API.md)** — AI-powered chaptering (serviceFeature=5)
-- **[Content Lab API](KALTURA_CONTENT_LAB_API.md)** — AI chapter generation widget
+- **[Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md)** — AI chapter generation widget
 - **[Multi-Stream API](KALTURA_MULTI_STREAM_API.md)** — Dual-screen entries with slide/camera sync
 - **[Upload & Ingestion API](KALTURA_UPLOAD_AND_INGESTION_API.md)** — Upload token workflow for slide images
 - **[Thumbnail API](KALTURA_THUMBNAIL_API.md)** — thumbAsset CRUD for slide thumbnails

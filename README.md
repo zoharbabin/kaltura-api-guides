@@ -63,7 +63,6 @@ KALTURA_VIDEO_PORTAL_BASE_URL=https://your-site.events.kaltura.com
 | [Thumbnail & Image API](KALTURA_THUMBNAIL_API.md) | Dynamic thumbnail URL (31 params), thumbAsset CRUD, thumbParams | 18 tests |
 | [Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md) | Player v7 embed (iframe + JavaScript) | 14 tests |
 | [REACH API](KALTURA_REACH_API.md) | Governed enrichment services marketplace: captions, translation, moderation, 23 service types | 35 tests |
-| [REACH — AI Clips](KALTURA_CONTENT_LAB_API.md) | AI clip generation workflow via REACH enrichment services | 15 tests |
 | [Agents Manager API](KALTURA_AGENTS_MANAGER_API.md) | Automated content processing agents | 15 tests |
 | [AI Genie API](KALTURA_AI_GENIE_API.md) | Conversational AI search and RAG | 37 tests |
 | [Events Platform API](KALTURA_EVENTS_PLATFORM_API.md) | Virtual events, sessions, speakers, templates | 25 tests |
@@ -90,7 +89,7 @@ KALTURA_VIDEO_PORTAL_BASE_URL=https://your-site.events.kaltura.com
 | [Chat & Collaborate (CnC)](KALTURA_CNC_API.md) | Real-time chat, Q&A, polls alongside video content | — |
 | [Genie Widget API](KALTURA_GENIE_WIDGET_API.md) | Conversational AI search widget over video library | 7 tests |
 | [Media Manager API](KALTURA_MEDIA_MANAGER_API.md) | Browsable media library: select, upload, manage entries | 11 tests |
-| [Content Lab API](KALTURA_CONTENT_LAB_API.md) | AI content repurposing: summaries, chapters, clips, quizzes | 9 tests |
+| [Content Lab Widget](KALTURA_CONTENT_LAB_WIDGET_API.md) | Embeddable AI content repurposing widget (summaries, chapters, clips, quizzes) | 9 tests |
 | [Agents Widget API](KALTURA_AGENTS_WIDGET_API.md) | Automated content-processing agent management UI | 7 tests |
 | [VOD Avatar Studio API](KALTURA_VOD_AVATAR_API.md) | Pre-recorded avatar video creation: server-side API and widget embed | 22 tests |
 | [Embeddable Analytics API](KALTURA_ANALYTICS_EMBED_API.md) | Analytics dashboards via iframe + postMessage | — |

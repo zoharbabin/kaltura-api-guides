@@ -394,7 +394,7 @@ All quiz behavior is driven by the quiz data on the entry (via `quiz.get`), not 
 AI-powered quiz generation is available through two paths:
 
 - **REACH API** — Order a `QUIZ` task (serviceFeature=12) via `entryVendorTask.add`. The AI engine analyzes video content and generates question cue points automatically. See [REACH API](KALTURA_REACH_API.md).
-- **Content Lab** — The Content Lab widget provides a UI for AI quiz generation from video content. See [Content Lab API](KALTURA_CONTENT_LAB_API.md).
+- **Content Lab** — The Content Lab widget provides a UI for AI quiz generation from video content. See [Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md).
 
 Both paths produce standard `KalturaQuestionCuePoint` cue points — the same type created manually via the API.
 
@@ -436,6 +436,6 @@ Quiz questions and answers are indexed in eSearch via `KalturaESearchCuePointIte
 - **[Cue Points Hub](KALTURA_CUE_POINTS_API.md)** — Base cue point concepts, shared CRUD, eSearch integration
 - **[Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md)** — Player v7 setup, IVQ plugin configuration
 - **[REACH API](KALTURA_REACH_API.md)** — AI-powered quiz generation (serviceFeature=12)
-- **[Content Lab API](KALTURA_CONTENT_LAB_API.md)** — AI quiz generation widget
+- **[Content Lab API](KALTURA_CONTENT_LAB_WIDGET_API.md)** — AI quiz generation widget
 - **[Gamification API](KALTURA_GAMIFICATION_API.md)** — Quiz scores as gamification inputs
 - **[Analytics Reports API](KALTURA_ANALYTICS_REPORTS_API.md)** — Quiz engagement analytics

@@ -1160,7 +1160,7 @@ For human captioning, use the `notes` field on the task to provide terminology g
 - **[Custom Metadata API](KALTURA_CUSTOM_METADATA_API.md)** — Custom metadata schemas for content enrichment
 - **[Analytics Reports](KALTURA_ANALYTICS_REPORTS_API.md)** — Monitor REACH task volumes and costs via reports  
 - **[Moderation API](KALTURA_MODERATION_API.md)** — AI moderation via REACH (serviceFeature=15), policies, rules, and category auto-action  
-- **[Content Lab](KALTURA_CONTENT_LAB_API.md)** — Unisphere widget UI for REACH enrichment (summaries, chapters, clips, quizzes)  
+- **[Content Lab](KALTURA_CONTENT_LAB_WIDGET_API.md)** — Unisphere widget UI for REACH enrichment (summaries, chapters, clips, quizzes)  
 - **[Agents Widget](KALTURA_AGENTS_WIDGET_API.md)** — Management UI for automated REACH enrichment tasks  
 - **[Events Platform](KALTURA_EVENTS_PLATFORM_API.md)** — Auto-enrich virtual event recordings with REACH services  
 - **[Captions Editor](KALTURA_CAPTIONS_EDITOR_API.md)** — Interactive editing of REACH-generated captions  

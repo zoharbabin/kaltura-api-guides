@@ -73,7 +73,7 @@ Guides for delivering content to end users through players, widgets, events, and
 | [Chat & Collaborate](KALTURA_CNC_API.md) | Playback & Content Hubs | Real-time chat, Q&A, polls alongside video |
 | [Genie Widget](KALTURA_GENIE_WIDGET_API.md) | Playback & Content Hubs | Conversational AI search widget over video library |
 | [Media Manager](KALTURA_MEDIA_MANAGER_API.md) | Playback & Content Hubs | Browsable media library: select, upload, manage entries |
-| [Content Lab](KALTURA_CONTENT_LAB_API.md) | Playback & Content Hubs | AI content repurposing: summaries, chapters, clips, quizzes |
+| [Content Lab Widget](KALTURA_CONTENT_LAB_WIDGET_API.md) | Playback & Content Hubs | AI content repurposing widget (summaries, chapters, clips, quizzes) |
 | [Agents Widget](KALTURA_AGENTS_WIDGET_API.md) | Playback & Content Hubs | Automated content-processing agent management UI |
 | [VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md) | Playback & Content Hubs | Pre-recorded avatar video creation: server-side API (CRUD, AI composition, generation) and Unisphere widget embed |
 | [Embeddable Analytics](KALTURA_ANALYTICS_EMBED_API.md) | Playback & Content Hubs | Analytics dashboards via iframe + postMessage |
@@ -172,7 +172,7 @@ graph TD
     EA["Embed Analytics"]
     UF["Unisphere Framework"]
     MM["Media Manager"]
-    CL["Content Lab"]
+    CL["Content Lab Widget"]
     AW["Agents Widget"]
     VA["VOD Avatar Studio"]
     EP["Events Platform"]
@@ -246,7 +246,7 @@ Blue = Foundation | Purple = Creation | Orange = Management | Green = Experience
 | Embed Genie AI search widget | [Genie Widget](KALTURA_GENIE_WIDGET_API.md) |
 | Embed composable experiences (multi-runtime) | [Unisphere Framework](KALTURA_UNISPHERE_FRAMEWORK_API.md) |
 | Embed a media library or picker | [Media Manager](KALTURA_MEDIA_MANAGER_API.md) |
-| Repurpose video with AI (summaries, chapters, clips) | [Content Lab](KALTURA_CONTENT_LAB_API.md) |
+| Repurpose video with AI (summaries, chapters, clips) | [Content Lab Widget](KALTURA_CONTENT_LAB_WIDGET_API.md) |
 | Automate content processing (captions, translation on upload) | [Agents Widget](KALTURA_AGENTS_WIDGET_API.md) or [Agents Manager API](KALTURA_AGENTS_MANAGER_API.md) |
 | Generate avatar videos from scripts | [VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md) |
 | Record from browser | [Express Recorder](KALTURA_EXPRESS_RECORDER_API.md) |
