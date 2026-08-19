@@ -6,3 +6,7 @@ site/
 docs/
 playbooks/research/
 LTI_PLAN.md
+INTERNAL_EXPLAINER.md
+INTERNAL_WHY_ONE_DOCS_SITE.md
+cache/
+proposals/
