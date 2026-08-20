@@ -27,6 +27,8 @@ Generate, use, and rotate Kaltura Sessions (KS) — the signed, time-limited tok
 
 A Kaltura Session (KS) is a signed, time-limited token you attach to API calls and player embeds. KS can be USER (type=0) or ADMIN (type=2). Use USER for almost everything where an end-user is interacting with apps or data; use ADMIN only for trusted backend-only workflows with short TTLs and strict configurations (roles, privileges).
 
+**Privileges restrict an ADMIN KS too — only a narrow set of access-granting privileges become moot.** An ADMIN KS already has unrestricted access to every service and action, so the privileges that exist purely to *grant* access a session wouldn't otherwise have — `edit`, `sview`, `list`, `download`, `edituser`, `editplaylist`, `sviewplaylist` — don't add anything on top of ADMIN. Every other privilege is enforced at the same validation layer regardless of KS type. Hardening privileges — `iprestrict`, `urirestrict`, `actionslimit`, `sessionid`, `setrole` — cap an ADMIN KS exactly like a USER KS; `setrole:PLAYBACK_BASE_ROLE` is the standard way to lock an ADMIN KS down to a role's whitelisted action set (see "Make the client KS playback-only" below). Entitlement privileges also apply to ADMIN KS exactly like USER KS: whenever your account enforces entitlements, an ADMIN KS still needs `disableentitlement` to bypass category-membership checks — it doesn't get that for free from its type. Generate ADMIN KS server-side and keep it off any client, browser, or mobile app regardless of how tightly you scope it — its authorization ceiling stays system-wide even when its blast radius is capped.
+
 **Common use-cases and considerations:**  
 
 *	Server-to-server or trusted backend: session.start → returns a KS with the privileges and expiry you request. Run this server-side only to keep secrets secure.
@@ -195,12 +197,41 @@ curl -X POST "$KALTURA_SERVICE_URL/service/apptoken/action/startSession" \
 
 # 7. Privileges: what to actually use
 
-Keep it tight:
+Privileges are a comma-separated list of `key:value` pairs on a KS (`key:1_value,key:0_value` — no spaces). Most support a `*` wildcard value. Only a narrow set of access-granting privileges (`edit`, `sview`, `list`, `download`, `edituser`, `editplaylist`, `sviewplaylist`) become moot on an ADMIN KS, since ADMIN already has the access they'd grant — see the callout in Section 3. Every other privilege, including hardening privileges (`iprestrict`, `urirestrict`, `actionslimit`, `sessionid`, `setrole`) and entitlement privileges (`disableentitlement` and the rest), is enforced at the same validation layer regardless of KS type. This table covers every privilege the Kaltura API recognizes:
 
-* Playback: sview:* (+ enforce entitlements and access control profiles in your account configuration).
-* Upload/edit tools: add only what’s required for the desired feature set (e.g., edit specific objects or rely on server APIs that hold ADMIN).
-* Use privacy context (e.g., privacycontext:EDU_PORTAL) in KS to align with entitlement rules, ensuring the session is scoped to the appropriate user and content boundaries.
-* Reserve `*` for short-lived backend ADMIN sessions that stay server-side.
+| Privilege | What it does | Typical use | Argument |
+|-----------|--------------|--------------|----------|
+| `edit` | Grants edit access to an entry the session doesn't own | Let a specific integration update an entry on behalf of another owner | Entry ID or `*` |
+| `sview` | Grants view/streaming/download access to a protected entry | Issue a per-entry playback ticket, e.g. after a pay-per-view purchase | Entry ID or `*` |
+| `list` | Lets a USER KS list entries it doesn't own | Client-side search/browse across a shared library | Only `list:*` is supported |
+| `download` | Grants download-intent access to an entry asset | Distinguish download actions (raw/download URLs) from streaming (`sview`) | Entry ID or `*` |
+| `downloadasset` | Grants download access to a specific asset — binds ADMIN KS too, not bypassed by session type | Used internally when `flavorAsset.getUrl` is called | Asset ID or `*` |
+| `editplaylist` | Grants edit access to a specific manual playlist | Let a user manage a shared playlist they don't own | Playlist ID |
+| `sviewplaylist` | Grants view access to a specific manual playlist | Let a user view a shared playlist they don't own | Playlist ID |
+| `edituser` | Lets a USER KS change an entry's owner | Upload-on-behalf-of workflows, ownership transfer | `*` or slash-separated usernames |
+| `actionslimit` | Caps the number of API calls the KS can make | Bound the blast radius of a KS you're about to expose to a client | Integer |
+| `setrole` | Restricts the KS to one role's white-listed actions — works on ADMIN KS too, and is the standard way to scope one down | Grant a narrow, temporary action set (e.g., `PLAYBACK_BASE_ROLE`) without changing the user's actual role | Role ID |
+| `iprestrict` | Locks the KS to a single IP address | Tie a leaked KS to one origin so it can't be replayed elsewhere | Single IPv4 address |
+| `urirestrict` | Locks the KS to a URI prefix, e.g. `/api_v3/*` | Used internally when the server embeds a KS in a returned URL | URI prefix (trailing `*`) |
+| `enableentitlement` | Forces entitlement checks on this KS | Client-facing apps that rely on category-membership enforcement | none |
+| `disableentitlement` | Bypasses entitlement checks (private-category access) — required on both USER and ADMIN KS whenever your account enforces entitlements; ADMIN doesn't get this for free | Grant an admin-side tool (e.g., the Rich Media CMS) full catalog visibility regardless of category membership | none |
+| `disableentitlementforentry` | Bypasses entitlement checks for one entry ID — applies to ADMIN KS too | Share a single entitlement-protected entry without disabling entitlements account-wide | Entry ID (chain multiple privileges for several entries) |
+| `privacycontext` | Sets the entitlement partition/label to check against | Scope a multi-tenant catalog's entitlement checks to one portal's categories | Free-text label defined per-category in KMC |
+| `enablecategorymoderation` | Puts new category entries into PENDING status on moderated categories | Support the category-moderation flow when entitlements aren't enforced | none |
+| `reftime` | Overrides "now" for relative-date fields | Test the effect of scheduled-task filters at a future timestamp | Unix timestamp |
+| `preview` | Caps the byte size returned by a flavor download | Used internally for preview-restricted access-control profiles | Size in bytes |
+| `sessionid` | Groups KS tokens together for bulk revocation | End every session from one login when the user logs out, via `session.end` | Arbitrary string, shared across the group |
+| `apptoken` | Records which AppToken minted this KS | Investigation and tracking only — set by the server, not by you | AppToken ID |
+
+> Entitlement enforcement — and therefore `disableentitlement`, `enableentitlement`, and `privacycontext` — only matters when your account has entitlements turned on. Check with your Kaltura account team if you're unsure whether category-based entitlements are enabled; if they're off, these privileges are inert for every KS type, not just ADMIN.
+
+Keep it tight in practice:
+
+* Playback: `sview:*` (+ enforce entitlements and access control profiles in your account configuration).
+* Upload/edit tools: add only what's required for the desired feature set (e.g., edit specific objects or rely on server APIs that hold ADMIN).
+* Use privacy context (e.g., `privacycontext:EDU_PORTAL`) in KS to align with entitlement rules, ensuring the session is scoped to the appropriate user and content boundaries.
+* Reserve `*` for short-lived backend ADMIN sessions that stay server-side — a grant this broad belongs only in trusted, server-only code paths.
+* Grant `disableentitlement` deliberately, not as routine boilerplate: add it when a backend session genuinely needs to see content outside its entitlement scope (e.g., an admin catalog-management tool). It applies to ADMIN KS exactly like USER KS, so a backend ADMIN session with entitlements enabled on the account still needs it to see entitlement-restricted content.
 
 # 8. Renewal, caching, and fallback
 
