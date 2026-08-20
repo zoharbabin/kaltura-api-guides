@@ -76,6 +76,7 @@ Guides for delivering content to end users through players, widgets, events, and
 | [Content Lab Widget](KALTURA_CONTENT_LAB_WIDGET_API.md) | Playback & Content Hubs | AI content repurposing widget (summaries, chapters, clips, quizzes) |
 | [Agents Widget](KALTURA_AGENTS_WIDGET_API.md) | Playback & Content Hubs | Automated content-processing agent management UI |
 | [VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md) | Playback & Content Hubs | Pre-recorded avatar video creation: server-side API (CRUD, AI composition, generation) and Unisphere widget embed |
+| [Transparent Alpha-Channel Avatars](KALTURA_ALPHA_CHANNEL_AVATARS_GUIDE.md) | Playback & Content Hubs | Advanced technique: custom flavor + chroma key to get a real alpha-channel WebM from a VOD Avatar render |
 | [Embeddable Analytics](KALTURA_ANALYTICS_EMBED_API.md) | Playback & Content Hubs | Analytics dashboards via iframe + postMessage |
 | [Unisphere Framework](KALTURA_UNISPHERE_FRAMEWORK_API.md) | Playback & Content Hubs | Micro-frontend framework: loader, workspace, services |
 | [Events Platform](KALTURA_EVENTS_PLATFORM_API.md) | Virtual Events & Webinars | Virtual events, webinars, town halls, sessions |
@@ -249,6 +250,7 @@ Blue = Foundation | Purple = Creation | Orange = Management | Green = Experience
 | Repurpose video with AI (summaries, chapters, clips) | [Content Lab Widget](KALTURA_CONTENT_LAB_WIDGET_API.md) |
 | Automate content processing (captions, translation on upload) | [Agents Widget](KALTURA_AGENTS_WIDGET_API.md) or [Agents Manager API](KALTURA_AGENTS_MANAGER_API.md) |
 | Generate avatar videos from scripts | [VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md) |
+| Get a transparent, per-pixel-alpha avatar video for browser compositing | [Transparent Alpha-Channel Avatars](KALTURA_ALPHA_CHANNEL_AVATARS_GUIDE.md) |
 | Record from browser | [Express Recorder](KALTURA_EXPRESS_RECORDER_API.md) |
 | Embed a real-time conversational AI avatar | [Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md) |
 | Embed analytics dashboards | [Embeddable Analytics](KALTURA_ANALYTICS_EMBED_API.md) |

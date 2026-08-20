@@ -1369,6 +1369,7 @@ done
 # 15. Related Guides
 
 - **[Video Editing API](KALTURA_VIDEO_EDITING_API.md)** — Trim, clip, concat, overlay, chroma key, caption burn-in, effects  
+- **[Transparent Alpha-Channel Avatars](KALTURA_ALPHA_CHANNEL_AVATARS_GUIDE.md)** — Custom flavor + chroma key to produce a real alpha-channel WebM  
 - **[Content Delivery API](KALTURA_CONTENT_DELIVERY_API.md)** — playManifest streaming URLs, raw serve, download URLs, access control  
 - **[Thumbnail & Image API](KALTURA_THUMBNAIL_API.md)** — Dynamic thumbnail generation, thumbAsset management, sprite sheets  
 - **[Session Guide](KALTURA_SESSION_GUIDE.md)** — Create and manage KS tokens  

@@ -741,6 +741,7 @@ curl -X POST "$KALTURA_SERVICE_URL/service/flavorAsset/action/getVolumeMap" \
 - **[Captions & Transcripts API](KALTURA_CAPTIONS_AND_TRANSCRIPTS_API.md)** — Manage caption assets for burn-in operations  
 - **[Multi-Stream API](KALTURA_MULTI_STREAM_API.md)** — Multi-camera entries (complementary to overlay/PiP)  
 - **[VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md)** — AI avatar video generation (source content for green-screen composition)  
+- **[Transparent Alpha-Channel Avatars](KALTURA_ALPHA_CHANNEL_AVATARS_GUIDE.md)** — Chroma-key a green-screen source to a real alpha-channel WebM instead of a replacement background  
 - **[REACH API](KALTURA_REACH_API.md)** — Auto-generate captions for burn-in, or trigger enrichment after editing  
 - **[Agents Manager](KALTURA_AGENTS_MANAGER_API.md)** — Automate editing workflows (trigger on ENTRY_READY)  
 - **[Thumbnail API](KALTURA_THUMBNAIL_API.md)** — Generate thumbnails from edited entries  

@@ -191,6 +191,7 @@ Read the relevant guide when you need to implement a specific capability:
 - **[Content Lab](../../../KALTURA_CONTENT_LAB_WIDGET_API.md)** — AI content repurposing widget. Dual-runtime (application + ai-consent). Generates summaries, chapters, clips, quizzes from video. Entry eligibility checks, consent API.
 - **[Agents Widget](../../../KALTURA_AGENTS_WIDGET_API.md)** — Agent management drawer UI. Create/configure automated content-processing agents with triggers and actions. Connects to Agents Manager backend.
 - **[VOD Avatar Studio](../../../KALTURA_VOD_AVATAR_API.md)** — Pre-recorded avatar video studio. Script-to-video generation with AI avatars. Output saved as Kaltura media entries.
+- **[Transparent Alpha-Channel Avatars](../../../KALTURA_ALPHA_CHANNEL_AVATARS_GUIDE.md)** — Advanced technique to get a real per-pixel alpha-channel WebM from a VOD Avatar render, via a custom flavor with a chroma-key + despill filter chain.
 - **[Embeddable Analytics](../../../KALTURA_ANALYTICS_EMBED_API.md)** — Analytics dashboards via iframe + postMessage. viewsConfig for widget control, 9 dashboard views, 11 entity drill-downs, date filters.
 - **[Unisphere Framework](../../../KALTURA_UNISPHERE_FRAMEWORK_API.md)** — Micro-frontend framework: loader, workspace lifecycle, 9 built-in services (pub-sub, storage, theme, analytics, logger), 15 embeddable widgets (Genie, Media Manager, Content Lab, Notifications, Avatars), player integration plugins, custom runtime development. CDN embedding (no npm needed) and npm build path.
 

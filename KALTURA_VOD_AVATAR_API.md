@@ -921,6 +921,7 @@ The API always returns HTTP 200. Check the response body for `{ "objectType": "K
 # 14. Related Guides
 
 - **[Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — Real-time AI avatar conversations via the intelligent-agents-sdk — the live counterpart to this pre-recorded studio  
+- **[Transparent Alpha-Channel Avatars](KALTURA_ALPHA_CHANNEL_AVATARS_GUIDE.md)** — Turn a rendered avatar video into a real per-pixel-transparent WebM for browser compositing  
 - **[Unisphere Framework](KALTURA_UNISPHERE_FRAMEWORK_API.md)** — The micro-frontend framework that powers the widget embed: loader, workspace lifecycle, services  
 - **[Experience Components Overview](KALTURA_EXPERIENCE_COMPONENTS_API.md)** — Index of all embeddable components with shared guidelines  
 - **[REACH API](KALTURA_REACH_API.md)** — Add captions and transcripts to source entries before AI composition, or enrich generated avatar videos  
