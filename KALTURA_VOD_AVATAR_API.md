@@ -12,7 +12,7 @@ This guide covers two integration paths:
 - **Server-side API** (sections 4–10) — Full programmatic control over avatar videos: create, compose, generate, manage  
 - **Widget embed** (section 11) — Drop-in browser UI for end users via the Unisphere framework  
 
-For **real-time conversational avatars** that hold live AI-powered conversations, see the [Conversational Avatar Embed](KALTURA_CONVERSATIONAL_AVATAR_API.md).
+For **real-time conversational avatars** that hold live AI-powered conversations, see [Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md).
 
 <!-- Sections: 1.When to Use | 2.Prerequisites | 3.Architecture | 4.Auth & Headers | 5.Avatar Templates & Configuration | 6.Video Project Management | 7.AI Composition | 8.Audio Preview | 9.Video Generation | 10.Complete Server-Side Workflow | 11.Widget Embedding | 12.Error Handling | 13.Best Practices | 14.Related Guides -->
 
@@ -40,18 +40,17 @@ The VOD Avatar system has two layers:
 
 | Layer | URL Pattern | Purpose |
 |-------|------------|---------|
-| Server-side API | `https://video-avatar.$REGION.ovp.kaltura.com/api/v1/` | Video project CRUD, AI composition, video generation, avatar management |
+| Server-side API | `https://video-avatar.$REGION.ovp.kaltura.com/api/v1/` | Video project CRUD, AI composition, video generation |
 | Unisphere widget | `https://unisphere.$REGION.ovp.kaltura.com/v1/` | Browser-based studio UI (uses the server-side API internally) |
 
 **Server-side API flow:**
 
-1. **List avatar templates** — `avatarTemplate/list` returns the 36 available AI presenters  
-2. **Create an avatar** — `avatar/upsert` configures a template with a background  
-3. **Create a video project** — `video/add` creates a project with scenes and narration  
-4. **Optionally compose with AI** — `video/compose` generates scenes from source content  
-5. **Preview audio** — `video/previewAudio` lets you hear the TTS narration before generating  
-6. **Generate the video** — `video/generate` starts rendering; poll `video/get` until status is `ready`  
-7. **Retrieve the Kaltura entry** — The `entryId` field on the completed video links to the generated media entry  
+1. **Obtain an avatar ID** — Avatar selection now happens through a separate avatar catalog service rather than this API (see section 5). Use the Unisphere widget's avatar picker to obtain an `avatarId` for use in the calls below  
+2. **Create a video project** — `video/add` creates a project with scenes and narration, referencing the avatar via `avatarId`  
+3. **Optionally compose with AI** — `video/compose` generates scenes from source content (entries, URLs, or presentation slides)  
+4. **Preview audio or URL sources** — `video/previewAudio` lets you hear the TTS narration before generating; `video/previewUrl` lets you preview a URL source before composing  
+5. **Generate the video** — `video/generate` starts rendering; poll `video/get` until status is `ready`  
+6. **Retrieve the Kaltura entry** — The `entryId` field on the completed video links to the generated media entry  
 
 **Video status lifecycle:**
 
@@ -105,133 +104,24 @@ Every request uses:
 - A plain KS works — standard privileges are sufficient (no `disableentitlement` or custom privileges required)  
 - Both `type=0` (USER) and `type=2` (ADMIN) sessions work  
 - Data isolation is per-user: each user sees only their own videos and avatars, regardless of session type  
-- The partner account must have the VOD Avatar feature enabled. Use `partner/checkConfiguration` to verify:
+- The partner account must have the VOD Avatar feature enabled. Use `partner/initConfiguration` to verify:
   ```bash
-  curl -s -X POST "$AVATAR_API/partner/checkConfiguration" \
+  curl -s -X POST "$AVATAR_API/partner/initConfiguration" \
     -H "Authorization: Bearer $KALTURA_KS" \
     -H "Content-Type: application/json" \
     -d '{}'
   ```
-  The response lists prerequisite checks with `valid: true/false`. The `source-only-conversion-profile` check must be valid. Contact your Kaltura account manager if checks fail  
+  The call is read-only — it validates configuration and does not create or change anything on the account. The response is `{ ok: boolean, results: [{ name, valid, value? }] }`. `results[].name` values include `source-only-conversion-profile`, `ppt-conversion-profile`, `reach-profile`, `reach-feature`, and one or more `vendor-catalog-item-*` entries (one per licensed feature, e.g. `vendor-catalog-item-avatar-vod` for the feature gating `previewAudio`, `previewAudioStream`, `generate`, and `previewUrl`). The `source-only-conversion-profile` check must be valid. Contact your Kaltura account manager if checks fail  
 - If the KS contains a `urirestrict` privilege, the restricted URI pattern must match the API path  
 
 
 # 5. Avatar Templates & Configuration
 
-Before creating a video, you need an **avatar** — a specific AI presenter with a chosen background. Avatars are built in two steps:
+Before creating a video, you need an **avatar** — a specific AI presenter with a chosen voice, visual, and background. The avatar ID is passed to `video/add` to assign the presenter for a video project.
 
-1. **Pick a template** — Each template is a predefined AI character with a unique face, voice, and speaking style. You select from the available set of predefined characters.  
-2. **Configure it as an avatar** — Combine the template with a background (solid color, library image, or custom image from your Kaltura account). This creates a reusable avatar configuration tied to your user.  
+Avatar template selection and avatar creation now live in a separate Kaltura avatar catalog service, not on the VOD Avatar Studio API described in this guide. Obtain an `avatarId` through the Unisphere widget (section 11) — it embeds the current avatar picker and template gallery — then pass the resulting `avatarId` to `video/add` exactly as shown in the workflow examples in sections 6 and 10.
 
-The avatar ID is then passed to `video.add` to assign the presenter for that video project.
-
-## Step 1: List Available Templates
-
-Call `avatarTemplate/list` to get the full set of available AI characters. Each template has an `id` (used when creating avatars) and a display `name`:
-
-```bash
-curl -s -X POST "$AVATAR_API/avatarTemplate/list" \
-  -H "Authorization: Bearer $KALTURA_KS" \
-  -H "Content-Type: application/json" \
-  -d '{}'
-```
-
-**Response:**
-
-```json
-{
-  "objects": [
-    { "id": "jane", "name": "Jane" },
-    { "id": "adam", "name": "Adam" },
-    { "id": "amir", "name": "Amir" }
-  ],
-  "totalCount": 36
-}
-```
-
-The `id` field (e.g., `"jane"`, `"adam"`) is what you pass as `templateId` when creating an avatar. The full set of 36 templates: adam, amir, ben, cristina, david, derek, dylan, elizabeth, gloria, harper, harry, henry, james, jane, jason, jennifer, julia, kevin, larry, lisa, maria, maya, mia, miguel, ming, rita, sam, sara, sharon, sophia, taylor, theodore, tim, victoria, william, yasmin.
-
-## Step 2: Create an Avatar (`avatar/upsert`)
-
-An avatar pairs a template with a background. The `upsert` action is idempotent — if an avatar with the same template + background combination already exists for your user, it returns the existing one instead of creating a duplicate. This means you can safely call `upsert` every time without checking for existing avatars first.
-
-```bash
-AVATAR_RESULT=$(curl -s -X POST "$AVATAR_API/avatar/upsert" \
-  -H "Authorization: Bearer $KALTURA_KS" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "templateId": "jane",
-    "background": { "type": "color", "color": "#CEEEDB" }
-  }')
-AVATAR_ID=$(echo "$AVATAR_RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
-echo "Avatar ID: $AVATAR_ID"
-```
-
-**Request fields:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `templateId` | string | yes | One of the template IDs from `avatarTemplate/list` (e.g., `"jane"`, `"adam"`) |
-| `background` | object | yes | Background configuration — structure depends on the `type` field (see below) |
-
-**`background` object:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | string | yes | One of: `"color"`, `"library"`, `"entry"` |
-| `color` | string | if type=`"color"` | Hex color code (e.g., `"#CEEEDB"`, `"#FFFFFF"`) |
-| `id` | string | if type=`"library"` | Predefined background image ID (lowercase alphanumeric and hyphens only, e.g., `"office-1"`) |
-| `entryId` | string | if type=`"entry"` | Kaltura entry ID of a custom background image from your account |
-
-**Background type examples:**
-
-```bash
-# Solid color background
-'{ "templateId": "adam", "background": { "type": "color", "color": "#1A1A2E" } }'
-
-# Predefined library image
-'{ "templateId": "adam", "background": { "type": "library", "id": "office-1" } }'
-
-# Custom image from your Kaltura account
-'{ "templateId": "adam", "background": { "type": "entry", "entryId": "0_bg7x9k2m" } }'
-```
-
-**Response fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | The avatar ID — pass this as `avatarId` when creating video projects |
-| `templateId` | string | The template used |
-| `background` | object | The background configuration |
-| `createdAt` | string | ISO 8601 creation timestamp |
-| `updatedAt` | string | ISO 8601 last update timestamp |
-
-## Get an Avatar
-
-Retrieve an existing avatar configuration by ID:
-
-```bash
-curl -s -X POST "$AVATAR_API/avatar/get" \
-  -H "Authorization: Bearer $KALTURA_KS" \
-  -H "Content-Type: application/json" \
-  -d "{ \"id\": \"$AVATAR_ID\" }"
-```
-
-Returns the same response structure as `avatar/upsert`.
-
-## Preview an Avatar
-
-Get a PNG image showing how the avatar looks with its configured background. Use this to display a visual preview before creating videos:
-
-```bash
-curl -s -X POST "$AVATAR_API/avatar/preview" \
-  -H "Authorization: Bearer $KALTURA_KS" \
-  -H "Content-Type: application/json" \
-  -d "{ \"id\": \"$AVATAR_ID\" }" \
-  --output avatar_preview.png
-```
-
-Returns `image/png` binary data. The preview shows the avatar character composited on the configured background.
+**What changed:** The `avatarTemplate.list` and `avatar.upsert`/`avatar.get`/`avatar.preview` actions previously documented on `$AVATAR_API` in this section have been removed from the VOD Avatar Studio backend. Avatar management moved to a dedicated catalog service with a different action set (`avatar/get`, `avatar/create`, `avatar/update`, `avatar/delete`, `avatar/list`, `avatar-template/list`) and different field shapes (`voice`, `visual`, `face`, and `background` objects, rather than a flat `templateId` + `background` pair). This section will document the full server-side contract for that catalog service once its customer-facing accessibility and stable shape are confirmed.
 
 
 # 6. Video Project Management
@@ -273,7 +163,7 @@ echo "Video ID: $VIDEO_ID"
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | yes | Display name for the video project |
-| `avatarId` | string | yes | The avatar ID returned by `avatar/upsert` — determines which AI presenter appears in the video |
+| `avatarId` | string | yes | The avatar ID obtained from the avatar catalog service (see section 5) — determines which AI presenter appears in the video |
 | `scenes` | array of scene objects | no | Ordered list of scenes. Can be empty at creation and populated later via `video/update` or `video/compose` |
 
 ### Scene Object
@@ -302,10 +192,29 @@ Each element in the `scenes` array represents one segment of the video.
 
 ### Broll Object
 
+The `type` field selects the broll variant. Omit `type` for the default video broll.
+
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `entryId` | string | yes (if broll provided) | Kaltura entry ID of the background video to display behind the avatar |
-| `startTime` | number | yes (if broll provided) | Start time in seconds within the background video. The clip plays from this point for the duration of the scene's narration |
+| `type` | string enum | no | `"video"` (default) or `"slide"` — selects which of the two shapes below applies |
+| `entryId` | string | yes (if broll provided) | Kaltura entry ID of the background video (`type: "video"`) or presentation entry (`type: "slide"`) |
+| `startTime` | number | yes for `type: "video"` | Start time in seconds within the background video. The clip plays from this point for the duration of the scene's narration |
+| `flavorAssetId` | string | yes for `type: "slide"` | Flavor asset ID of the presentation's slide images |
+| `index` | number | yes for `type: "slide"` | Slide index to display behind the avatar for this scene |
+
+**Slide broll response:** the video object echoes back a server-populated `slideImageName` field alongside the slide broll's `entryId`, `flavorAssetId`, and `index`.
+
+**Video broll example:**
+
+```bash
+{ "type": "video", "entryId": "$KALTURA_ENTRY_ID", "startTime": 45 }
+```
+
+**Slide broll example:**
+
+```bash
+{ "type": "slide", "entryId": "$PRESENTATION_ENTRY_ID", "flavorAssetId": "$SLIDES_FLAVOR_ASSET_ID", "index": 2 }
+```
 
 **B-roll constraints:**
 - The same entry can be reused across multiple scenes with different `startTime` values — each reuse does not count as an additional source  
@@ -350,13 +259,13 @@ The response returns the full video object. Key fields:
 **B-roll scene** — avatar overlaid on a video clip starting at the 45-second mark:
 
 ```bash
-{ "layoutType": "broll", "narration": { "text": "As you can see in this demo..." }, "broll": { "entryId": "1_xyz789", "startTime": 45 } }
+{ "layoutType": "broll", "narration": { "text": "As you can see in this demo..." }, "broll": { "entryId": "$KALTURA_ENTRY_ID", "startTime": 45 } }
 ```
 
 **Scene with per-scene avatar override** — different presenter for this scene:
 
 ```bash
-{ "layoutType": "full-screen", "narration": { "text": "Hi, I am Adam.", "avatarId": "ADAM_AVATAR_ID" } }
+{ "layoutType": "full-screen", "narration": { "text": "Hi, I am Adam.", "avatarId": "$KALTURA_AVATAR_ID" } }
 ```
 
 **Minimal scene** — layout defaults to `"full-screen"`:
@@ -451,7 +360,7 @@ curl -s -X POST "$AVATAR_API/video/delete" \
 
 # 7. AI Composition
 
-The compose action uses AI to generate scenes from source video content. It analyzes captions and transcripts from the provided entries and creates a structured narration script.
+The compose action uses AI to generate scenes from source content. It analyzes captions, documents, and URLs from the provided sources and creates a structured narration script.
 
 ## Compose Scenes from Content
 
@@ -463,7 +372,7 @@ curl -s -X POST "$AVATAR_API/video/compose" \
     \"id\": \"$VIDEO_ID\",
     \"formatType\": \"session-highlights\",
     \"duration\": 120,
-    \"entryIds\": [\"$SOURCE_ENTRY_1\", \"$SOURCE_ENTRY_2\"],
+    \"sources\": [{ \"entryId\": \"$SOURCE_ENTRY_1\" }],
     \"userBrief\": \"Focus on the product roadmap announcements\",
     \"generateName\": true
   }"
@@ -474,22 +383,38 @@ curl -s -X POST "$AVATAR_API/video/compose" \
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `id` | string | yes | Video project ID |
-| `formatType` | string | yes | `"session-highlights"` or `"video-explainer"` (see below) |
+| `formatType` | string | yes | `"session-highlights"`, `"explainer-video"`, or `"presentation-narration"` (see below) |
 | `duration` | number | yes | Target video duration in seconds. Min: 1, max: 1200 (20 minutes) |
-| `entryIds` | array | yes | Kaltura entry IDs with captions to analyze |
-| `userBrief` | string | no | Describes the video goals, style, or focus areas for the AI |
+| `sources` | array | depends on format (see validation rules below) | Content sources to analyze — each element is one of the three source shapes below |
+| `userBrief` | string | depends on format (see validation rules below) | Describes the video goals, style, or focus areas for the AI |
 | `generateName` | boolean | no | Auto-generate a video name from the content |
+
+**Source shapes (elements of the `sources` array):**
+
+| Shape | Fields | Use for |
+|-------|--------|---------|
+| Entry source | `{ "entryId": "..." }` | A Kaltura entry with captions to analyze |
+| URL source | `{ "url": "..." }` | A public webpage to extract text content from — supported only for `"explainer-video"` |
+| Presentation source | `{ "entryId": "...", "slideIndexes": [0, 2, 5] }` | Specific slides from a presentation entry |
 
 **Format types:**
 
 | Format | Source Content | Output |
 |--------|---------------|--------|
-| `session-highlights` | Video captions only | Short highlights video narrated by the avatar summarizing the key points |
-| `video-explainer` | Video captions + documents | Explainer video combining multiple sources into a coherent narrative |
+| `session-highlights` | Exactly one entry source (no URLs) | Short highlights video narrated by the avatar summarizing the key points |
+| `explainer-video` | Up to 5 sources total, including up to 5 URLs | Explainer video combining multiple sources into a coherent narrative. Use `userBrief` when no source entries or URLs are provided |
+| `presentation-narration` | Exactly one entry source, no URLs | Narrated walkthrough of a presentation's slides |
+
+Use `"explainer-video"` — the `"video-explainer"` value from earlier revisions of this API is deprecated in favor of `"explainer-video"`.
+
+**Validation rules per format:**
+- `session-highlights` — requires exactly one source, and it must be an entry (no URLs). Providing zero sources returns `CAPTIONS_NOT_FOUND` rather than a dedicated missing-source error — provide exactly one entry source with captions
+- `explainer-video` — accepts up to 5 sources total and up to 5 URLs; if there are zero entries, zero URLs, and no `userBrief`, the request is rejected
+- `presentation-narration` — requires exactly one source, and it must be an entry (no URLs)
 
 The compose action:
 1. Transitions the video status to `composing`  
-2. Extracts captions and documents from the source entries  
+2. Extracts captions, documents, and URL content from the sources  
 3. Uses AI (AWS Bedrock Claude) to generate a structured scene-by-scene narration  
 4. Populates the video's `scenes` array with the generated content  
 5. Transitions to `composed` on success, or `compose-error` on failure  
@@ -497,6 +422,34 @@ The compose action:
 Source entries require captions or transcripts — add them via [REACH](KALTURA_REACH_API.md) before composing. The API returns `CAPTIONS_NOT_FOUND` if text content is missing.
 
 **Response:** Returns the video with status `composing`. Poll `video.get` until status changes to `composed`.
+
+AI-composed videos are capped at 20 scenes. For longer storyboards, author scenes manually via `video/update` (see the manual storyboard example in section 10) instead of relying on compose.
+
+## Preview a URL Source
+
+Before composing an `explainer-video` from a URL, preview it to confirm the page's title and image extract correctly:
+
+```bash
+curl -s -X POST "$AVATAR_API/video/previewUrl" \
+  -H "Authorization: Bearer $KALTURA_KS" \
+  -H "Content-Type: application/json" \
+  -d '{ "url": "https://example.com/article" }'
+```
+
+**Request fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | string | yes | The URL to preview. The URL cannot contain embedded auth credentials |
+
+**Response fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | The extracted page title |
+| `imageUrl` | string | The extracted preview image URL |
+
+The API returns `URL_PREVIEW_FAILED` if the URL cannot be extracted (invalid URL or unresponsive server).
 
 
 # 8. Audio Preview
@@ -616,15 +569,8 @@ This example creates an avatar video from scratch using only the server-side API
 ```bash
 AVATAR_API="https://video-avatar.nvp1.ovp.kaltura.com/api/v1"
 
-# 1. Create an avatar with a color background
-AVATAR=$(curl -s -X POST "$AVATAR_API/avatar/upsert" \
-  -H "Authorization: Bearer $KALTURA_KS" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "templateId": "jane",
-    "background": { "type": "color", "color": "#CEEEDB" }
-  }')
-AVATAR_ID=$(echo "$AVATAR" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+# 1. Set $AVATAR_ID to a value obtained from the avatar catalog service (see
+#    section 5) — the Unisphere widget's avatar picker returns this value
 
 # 2. Create a video project with scenes
 VIDEO=$(curl -s -X POST "$AVATAR_API/video/add" \
@@ -685,15 +631,8 @@ The key difference: with AI composition (`video/compose`), you provide source en
 ```bash
 AVATAR_API="https://video-avatar.nvp1.ovp.kaltura.com/api/v1"
 
-# 1. Create (or reuse) an avatar
-AVATAR=$(curl -s -X POST "$AVATAR_API/avatar/upsert" \
-  -H "Authorization: Bearer $KALTURA_KS" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "templateId": "jane",
-    "background": { "type": "color", "color": "#1A1A2E" }
-  }')
-AVATAR_ID=$(echo "$AVATAR" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+# 1. Set $AVATAR_ID to a value obtained from the avatar catalog service (see
+#    section 5) — reuse the same ID across multiple videos for a consistent presenter
 
 # 2. Create a video with manually authored scenes mixing two source entries
 #    - Scenes 0 and 5: full-screen (avatar on background, no b-roll)
@@ -831,13 +770,14 @@ The VOD Avatar Studio is also available as a drop-in browser widget via the Unis
 
 ## Project Types
 
-The widget supports three project creation flows, controlled by `allowedProjectTypes`:
+The widget supports four project creation flows, controlled by `allowedProjectTypes`:
 
 | Value | Label | Description |
 |-------|-------|-------------|
 | `"fromScratch"` | Start from scratch | Create an avatar video by writing scenes manually |
 | `"session-highlights"` | Create session highlights | AI composes a highlights video from recorded session captions |
 | `"video-explainer"` | Generate a video on any topic | AI composes an explainer from video captions and documents |
+| `"presentation-narration"` | Narrate your presentation | Turn a presentation into an avatar-narrated video |
 
 ```javascript
 // Only allow manual creation (no AI composition)
@@ -873,6 +813,27 @@ workspace.session.setData(prev => ({ ...prev, ks: "new-ks-value" }));
 workspace.kill();
 ```
 
+## Events
+
+Subscribe to the Unisphere pub-sub service (see the [Unisphere Framework Guide](KALTURA_UNISPHERE_FRAMEWORK_API.md) section 9.1) to detect host-app-relevant actions the studio emits, such as the user dismissing the studio drawer:
+
+```javascript
+const pubSub = workspace.getService("unisphere.service.pub-sub");
+
+const unsubscribe = pubSub.subscribe(
+  "unisphere.event.module.vod-avatars.message-host-app",
+  (payload) => {
+    if (payload.action === "closeVodStudio") {
+      // The user closed the studio drawer — hide the host container
+    }
+  }
+);
+```
+
+| Event Type | Version | Payload | Description |
+|-----------|---------|---------|-------------|
+| `unisphere.event.module.vod-avatars.message-host-app` | `1.0.0` | `{ action: "closeVodStudio" }` | Emitted when the user closes the studio drawer |
+
 ## Widget Behavior
 
 - **Auto-save:** Scene edits are auto-saved after a 5-second debounce  
@@ -885,28 +846,47 @@ workspace.kill();
 
 ## Server-Side API Errors
 
+The API always returns HTTP 200. Check the response body for `{ "objectType": "KalturaAPIException", "code": "...", "message": "..." }` to detect an error — do not rely on the HTTP status code.
+
+`previewAudio` and `previewAudioStream` are the exception: an unhandled failure resolving the avatar's voice or from the underlying text-to-speech provider surfaces as a raw HTTP 500 with a generic body, not a `KalturaAPIException`. Check the HTTP status code for these two calls specifically, and retry with backoff — a 500 here indicates a transient upstream TTS or avatar-catalog issue rather than a request error on your side.
+
 | Error Code | Meaning | Resolution |
 |------------|---------|------------|
 | `VIDEO_IS_PROCESSING` | Scenes cannot be modified while composing or generating (name and metadata updates are still allowed) | Wait for the current operation to complete |
 | `VIDEO_CANNOT_COMPOSE` | Video status does not allow composition | Use `resetStatus` if in error state, or wait for current operation |
 | `VIDEO_CANNOT_GENERATE` | Video status does not allow generation | Ensure video is in `draft` or `composed` status |
-| `VIDEO_IS_BEING_GENERATED` | A generation is already in progress | Wait for it to complete |
+| `VIDEO_IS_BEING_GENERATED` | Video generation must finish before a new one can be requested | Poll `video/get` until the current generation completes |
+| `VIDEO_GENERATION_ALREADY_IN_PROGRESS` | Another video for this project is already being generated | Wait for it to finish before calling `generate` again |
 | `CANNOT_RESET_STATUS` | Only error statuses can be reset | Only `compose-error` and `generate-error` can be reset |
 | `SCENE_NOT_FOUND` | Scene index out of range | Check scene count in the video |
 | `SCENE_EMPTY_NARRATION` | Scene has no narration text | Add narration text before previewing audio |
-| `CAPTIONS_NOT_FOUND` | Source entries have no captions | Add captions/transcripts to source entries before composing |
-| `TOO_MANY_SOURCES` | Too many unique b-roll source entries across all scenes | Reduce the number of distinct `entryId` values. Reuse entries at different `startTime` offsets instead of adding new sources |
-| `AVATAR_NOT_FOUND` | Invalid avatar ID | Create an avatar with `avatar.upsert` first |
-| `AVATAR_TEMPLATE_NOT_FOUND` | Invalid template ID | Use an ID from `avatarTemplate.list` |
-| `BACKGROUND_NOT_FOUND` | Invalid library background ID | Use a valid background ID from the asset library |
+| `CAPTIONS_NOT_FOUND` | Source entries have no captions, or `session-highlights` compose was called with zero entry sources | Add captions/transcripts to source entries before composing. For `session-highlights`, provide exactly one entry source with captions |
+| `VIDEO_REQUIRED` | `session-highlights` compose was given a single source that is not a video entry (e.g., a document) | Provide a video entry with captions as the single source for `session-highlights` |
+| `TOO_MANY_SOURCES` | The `sources` array exceeds the format's source-count limit | Reduce the number of `sources` elements — see the validation rules per format in section 7 |
+| `TOO_MANY_URLS` | The `sources` array exceeds the format's URL-count limit (5 for `explainer-video`) | Reduce the number of URL sources |
+| `URLS_NOT_SUPPORTED` | A URL source was provided for a format that only accepts entries | Use URL sources only with `formatType: "explainer-video"` |
+| `URL_NOT_ACCESSIBLE` | The URL could not be accessed — it may require login or be behind a paywall | Provide a publicly accessible URL, or preview it first with `previewUrl` |
+| `URL_CONTENT_TYPE_NOT_SUPPORTED` | The URL points to a binary or non-textual file | Provide a URL to a text-based webpage |
+| `URL_PREVIEW_FAILED` | `previewUrl` could not extract the page title or image | Retry with a valid, publicly accessible URL |
+| `USER_BRIEF_REQUIRED` | `explainer-video` compose was called with no entries, no URLs, and no `userBrief` | Provide at least one source or a `userBrief` |
+| `PRESENTATION_REQUIRED` | `presentation-narration` compose was called without a presentation entry source | Provide exactly one entry source |
+| `SLIDE_NOT_FOUND` | The requested slide index was not found for the given presentation entry | Verify the `index` value against the presentation's actual slide count |
+| `ENTRY_NOT_FOUND` | The referenced entry ID does not exist | Verify the entry ID and that it belongs to your account |
+| `ENTRY_NOT_ENRICHED` | The entry is not yet enriched and cannot be used as a source | Wait for entry enrichment to complete before using it as a compose source |
+| `AVATAR_NOT_FOUND` | The `avatarId` does not resolve in the avatar catalog service | Obtain a valid `avatarId` through the Unisphere widget's avatar picker (see section 5) |
+| `AVATAR_TEMPLATE_NOT_FOUND` | The avatar's template ID does not resolve in the avatar catalog service | Re-select the avatar template through the Unisphere widget (see section 5) |
+| `BACKGROUND_NOT_FOUND` | The avatar's configured background does not resolve in the avatar catalog service | Re-select the background through the Unisphere widget (see section 5) |
 | `VIDEO_AVATAR_NOT_CONFIGURED` | Video has no avatar set | Set `avatarId` when creating or updating the video |
+| `AVATAR_VOD_NOT_CONFIGURED` | The partner account is not licensed for VOD Avatar | Contact your Kaltura account manager to enable the feature, then verify with `partner/initConfiguration` |
+| `OBJECT_NOT_FOUND_OR_STATUS_CHANGED` | The video was not found, or its status changed since it was last read | Re-fetch the video with `video/get` before retrying the operation |
+| `FAILED_TO_STREAM` | The server failed to stream the response | Retry the request; if it persists, fall back to the non-streaming action (e.g. `previewAudio` instead of `previewAudioStream`) |
 | `INVALID_STATUS_TRANSITION` | Status change not allowed | Follow the status lifecycle diagram in section 3 |
 
 ## Widget Errors
 
 - **Blank studio** — Verify the KS is valid and `partnerId` is a number (required type). Check browser console for API errors  
 - **No avatars available** — Confirm the account has VOD Avatar feature provisioning  
-- **Generation produces `generate-error`** — Isolate the cause: test a minimal 1-scene full-screen video first. If that succeeds, check b-roll entries for standard frame rates (25/30 fps) and confirm they are within the 5-source limit. If it also errors, retry later for a transient service issue  
+- **Generation produces `generate-error`** — Isolate the cause: test a minimal 1-scene full-screen video first. If that succeeds, check b-roll entries for standard frame rates (25/30 fps). If it also errors, retry later for a transient service issue  
 - **KS expiry** — Update reactively: `workspace.session.setData(prev => ({ ...prev, ks: "new-ks" }))`  
 
 
@@ -940,7 +920,7 @@ workspace.kill();
 
 # 14. Related Guides
 
-- **[Conversational Avatar Embed](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — Real-time AI avatar conversations via iframe SDK or WebRTC — the live counterpart to this pre-recorded studio  
+- **[Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — Real-time AI avatar conversations via the intelligent-agents-sdk — the live counterpart to this pre-recorded studio  
 - **[Unisphere Framework](KALTURA_UNISPHERE_FRAMEWORK_API.md)** — The micro-frontend framework that powers the widget embed: loader, workspace lifecycle, services  
 - **[Experience Components Overview](KALTURA_EXPERIENCE_COMPONENTS_API.md)** — Index of all embeddable components with shared guidelines  
 - **[REACH API](KALTURA_REACH_API.md)** — Add captions and transcripts to source entries before AI composition, or enrich generated avatar videos  

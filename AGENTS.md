@@ -42,7 +42,7 @@ Kaltura API Guides/
 ├── KALTURA_EXPERIENCE_COMPONENTS_API.md   # Experience components index (links to standalone guides)
 ├── KALTURA_EXPRESS_RECORDER_API.md        # Browser-based WebRTC recording
 ├── KALTURA_CAPTIONS_EDITOR_API.md         # Interactive caption editing with video/waveform sync
-├── KALTURA_CONVERSATIONAL_AVATAR_API.md   # AI-powered conversational video avatar embed
+├── KALTURA_CONVERSATIONAL_AVATAR_API.md   # Agentic Avatars — AI-powered conversational video avatars (intelligent-agents-sdk)
 ├── KALTURA_CNC_API.md                     # Chat & Collaborate (real-time chat, Q&A, polls)
 ├── KALTURA_GENIE_WIDGET_API.md            # Conversational AI search widget
 ├── KALTURA_MEDIA_MANAGER_API.md           # Browsable media library (select, upload, manage entries)
@@ -85,7 +85,7 @@ All tests must pass against the live Kaltura API before a guide is considered do
 4. **Agent-first.** Write for an AI agent that reads top-to-bottom and executes. Clear structure, explicit parameters, no ambiguity.
 5. **Customer-accessible only.** Document only API actions accessible to customer accounts. Verify every action against the live API with a standard customer KS. Exclude actions that return `SERVICE_FORBIDDEN` — these are internal/system actions. The `disableentitlement` KS privilege bypasses content entitlement checks; partner-level service restrictions remain in force regardless.
 6. **One guide per service boundary.** Each guide covers one cohesive API service or tightly-coupled service cluster. Two services belong in the same guide only if they share API actions, one depends on the other at the API level, or a developer using one always needs the other. Services that merely "relate to entries" (e.g., metadata and captions) are separate guides. When in doubt, split — standalone guides can cross-reference each other, but a bundled guide cannot be unbundled without losing coverage depth.
-7. **Self-contained.** Every guide must contain all the information an agent needs to build integrations. Inline all relevant external information directly in the guide. External links used during research are references for the guide author — keep them out of published guides.
+7. **Self-contained.** Every guide must contain all the information an agent needs to build integrations. Inline all relevant external information directly in the guide. External links used during research are references for the guide author — keep them out of published guides. **Exception:** a guide may link out to a versioned, actively-maintained public SDK documentation site instead of cloning its content when the guide's entire purpose is to front that SDK (currently: `KALTURA_CONVERSATIONAL_AVATAR_API.md` → `https://kaltura.github.io/intelligent-agents-sdk/`). Even under this exception, the guide must still stand on its own for the golden path: when to use it, prerequisites, a real working quick start, the auth model, and error handling basics stay inline — links are for reference depth, not for content an agent needs to get started.
 
 ## Guide File Structure
 
@@ -147,7 +147,7 @@ Auth header formats differ by API:
 - **Tables for structured data.** Parameter lists, status codes, enum values.
 - **Inline code for identifiers.** Backticks for parameter names, values, IDs, env vars.
 - **Emojis:** Only when explicitly requested.
-- **Acceptable URLs in guides:** (a) Kaltura API/CDN endpoint URLs in curl examples and configuration, (b) `example.com` placeholder URLs in code samples, (c) cross-references to other guides using `[Name](FILENAME.md)` format. Inline all other external information directly. Source code repositories, reference implementations, and "learn more" links are research aids for the author — keep them out of published guides.
+- **Acceptable URLs in guides:** (a) Kaltura API/CDN endpoint URLs in curl examples and configuration, (b) `example.com` placeholder URLs in code samples, (c) cross-references to other guides using `[Name](FILENAME.md)` format, (d) deep links into a versioned public SDK docs site for a guide that falls under the self-contained exception in the Philosophy section above. Inline all other external information directly. Source code repositories, reference implementations, and "learn more" links are research aids for the author — keep them out of published guides.
 - **Trailing double spaces for line breaks.** Lines within a paragraph that should render as separate visual lines must end with `  ` (two trailing spaces). Especially important in header blocks (Base URL / Auth / Format) and multi-line list items. Without them, GitHub and other renderers join lines into one paragraph.
 - **Use "multi-account" terminology.** Write "multi-account" or "parent-child account" when describing Kaltura's multi-account model. Explain concepts directly rather than using internal product names like "VPaaS."
 - **Platform scale.** Refer to the platform as having "100+ API services" and "a dozen client libraries" — not "80+" or other approximations.
@@ -227,7 +227,7 @@ Agents building on Kaltura should use platform services rather than reimplementi
 | Gamification & leaderboards | Game Services (badges, certificates, rules engine) | `KALTURA_GAMIFICATION_API.md` |
 | Browser recording | Express Recorder (WebRTC recording widget) | `KALTURA_EXPRESS_RECORDER_API.md` |
 | Caption editing | Captions Editor (interactive editing with waveform) | `KALTURA_CAPTIONS_EDITOR_API.md` |
-| AI avatar conversations | Conversational Avatar (iframe embed) | `KALTURA_CONVERSATIONAL_AVATAR_API.md` |
+| AI avatar conversations | Agentic Avatars (intelligent-agents-sdk) | `KALTURA_CONVERSATIONAL_AVATAR_API.md` |
 | Real-time chat & Q&A | Chat & Collaborate (event chat panels) | `KALTURA_CNC_API.md` |
 | AI search widget | Genie Widget (conversational search) | `KALTURA_GENIE_WIDGET_API.md` |
 | Embedded analytics | Embeddable Analytics (iframe dashboards) | `KALTURA_ANALYTICS_EMBED_API.md` |

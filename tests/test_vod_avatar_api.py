@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""End-to-end validation of the VOD Avatar Studio API — 22 tests.
-Covers: avatar templates, avatar CRUD, video CRUD, audio preview,
-video generation, status lifecycle, error validation, CDN/widget availability."""
+"""End-to-end validation of the VOD Avatar Studio API — 23 tests.
+Covers: partner configuration, avatar ID reuse, video CRUD, audio preview,
+URL preview, AI composition validation rules, video generation, status
+lifecycle, error validation, CDN/widget availability."""
 
 import sys
 import os
@@ -42,93 +43,51 @@ def main():
     runner = TestRunner("VOD Avatar Studio — E2E Validation")
 
     # ════════════════════════════════════════════
-    # Phase 1: Avatar Templates
+    # Phase 1: Partner Configuration
     # ════════════════════════════════════════════
 
-    def test_avatar_template_list():
-        """List available avatar templates."""
-        result = vod_avatar_post("avatarTemplate", "list")
+    def test_partner_init_configuration():
+        """Verify the account is provisioned for VOD Avatar."""
+        result = vod_avatar_post("partner", "initConfiguration", {})
+        assert result.get("ok") is True, f"Expected ok=true: {result}"
+        checks = {c["name"]: c.get("valid") for c in result.get("results", [])}
+        assert "source-only-conversion-profile" in checks, \
+            f"Expected 'source-only-conversion-profile' check: {checks}"
+        assert checks["source-only-conversion-profile"] is True, \
+            f"Expected source-only-conversion-profile valid: {checks}"
+        print(f"    Checks: {list(checks.keys())}")
+
+    runner.run_test("partner/initConfiguration — verify account provisioning", test_partner_init_configuration)
+
+    # ════════════════════════════════════════════
+    # Phase 2: Obtain an Avatar ID
+    # ════════════════════════════════════════════
+    # Avatar creation and template selection moved to a separate avatar
+    # catalog service (see guide section 5) — not part of this API. Tests
+    # reuse an avatarId already assigned to an existing video project in
+    # this account, the same way an agent would reuse an avatarId returned
+    # by the Unisphere widget's avatar picker across multiple videos.
+
+    def test_obtain_avatar_id():
+        """Find a reusable avatarId from an existing video project."""
+        result = vod_avatar_post("video", "list", {
+            "filter": {"orderBy": "-createdAt"},
+            "pager": {"offset": 0, "limit": 50},
+        })
         assert "objects" in result, f"Expected 'objects': {result}"
-        templates = result["objects"]
-        assert len(templates) > 0, "Expected at least one template"
-        state["template_ids"] = [t["id"] for t in templates]
-        state["template_id"] = templates[0]["id"]
-        for t in templates:
-            assert "id" in t, f"Template missing 'id': {t}"
-            assert "name" in t, f"Template missing 'name': {t}"
-        print(f"    {len(templates)} templates, first: {templates[0]['id']} ({templates[0]['name']})")
+        avatar_id = None
+        for v in result["objects"]:
+            if v.get("avatarId"):
+                avatar_id = v["avatarId"]
+                break
+        assert avatar_id, "No existing video project has an avatarId to reuse"
+        state["avatar_id"] = avatar_id
+        print(f"    Reusing avatarId: {avatar_id}")
 
-    runner.run_test("avatarTemplate/list — available presenters", test_avatar_template_list)
-
-    def test_template_jane_exists():
-        """Verify 'jane' (default) template exists."""
-        ids = state.get("template_ids", [])
-        assert "jane" in ids, f"Expected 'jane' in templates: {ids[:10]}..."
-        print("    jane template: present")
-
-    runner.run_test("avatarTemplate/list — default 'jane' template", test_template_jane_exists)
+    runner.run_test("video/list — obtain a reusable avatarId", test_obtain_avatar_id)
 
     # ════════════════════════════════════════════
-    # Phase 3: Avatar CRUD
-    # ════════════════════════════════════════════
-
-    def test_avatar_upsert():
-        """Create an avatar with a color background."""
-        template_id = state.get("template_id", "jane")
-        result = vod_avatar_post("avatar", "upsert", {
-            "templateId": template_id,
-            "background": {"type": "color", "color": "#CEEEDB"},
-        })
-        assert "id" in result, f"Expected 'id' in response: {result}"
-        state["avatar_id"] = result["id"]
-        assert result.get("templateId") == template_id, \
-            f"Expected templateId={template_id}, got {result.get('templateId')}"
-        bg = result.get("background", {})
-        assert bg.get("type") == "color", f"Expected color background: {bg}"
-        print(f"    Avatar: {result['id']}, template={template_id}")
-
-    runner.run_test("avatar/upsert — create with color background", test_avatar_upsert)
-
-    def test_avatar_upsert_idempotent():
-        """Verify upsert returns the same avatar for identical config."""
-        template_id = state.get("template_id", "jane")
-        result = vod_avatar_post("avatar", "upsert", {
-            "templateId": template_id,
-            "background": {"type": "color", "color": "#CEEEDB"},
-        })
-        assert result.get("id") == state.get("avatar_id"), \
-            f"Expected same ID {state.get('avatar_id')}, got {result.get('id')}"
-        print(f"    Idempotent: same ID returned")
-
-    runner.run_test("avatar/upsert — idempotent for same config", test_avatar_upsert_idempotent)
-
-    def test_avatar_get():
-        """Retrieve the created avatar."""
-        avatar_id = state.get("avatar_id")
-        assert avatar_id, "No avatar_id from upsert"
-        result = vod_avatar_post("avatar", "get", {"id": avatar_id})
-        assert result.get("id") == avatar_id, f"Expected id={avatar_id}: {result}"
-        assert "templateId" in result, f"Missing templateId: {result}"
-        assert "background" in result, f"Missing background: {result}"
-        assert "createdAt" in result, f"Missing createdAt: {result}"
-        print(f"    Got avatar: {avatar_id}, template={result['templateId']}")
-
-    runner.run_test("avatar/get — retrieve avatar", test_avatar_get)
-
-    def test_avatar_preview():
-        """Get avatar preview image (PNG)."""
-        avatar_id = state.get("avatar_id")
-        assert avatar_id, "No avatar_id"
-        resp = vod_avatar_post("avatar", "preview", {"id": avatar_id}, raw=True)
-        ct = resp.headers.get("content-type", "")
-        assert "image" in ct or len(resp.content) > 100, \
-            f"Expected image, got content-type={ct}, size={len(resp.content)}"
-        print(f"    Preview: {len(resp.content)} bytes, content-type={ct}")
-
-    runner.run_test("avatar/preview — get avatar image", test_avatar_preview)
-
-    # ════════════════════════════════════════════
-    # Phase 4: Video CRUD
+    # Phase 3: Video CRUD
     # ════════════════════════════════════════════
 
     def test_video_add():
@@ -191,7 +150,7 @@ def main():
             "scenes": [
                 {
                     "layoutType": "full-screen",
-                    "narration": {"text": "Updated scene one."},
+                    "narration": {"text": "Updated scene one with more narration text."},
                 },
             ],
         })
@@ -219,7 +178,7 @@ def main():
     runner.run_test("video/list — find test video", test_video_list)
 
     # ════════════════════════════════════════════
-    # Phase 5: Audio Preview
+    # Phase 4: Audio & URL Preview
     # ════════════════════════════════════════════
 
     def test_preview_audio():
@@ -236,6 +195,110 @@ def main():
         print(f"    Audio preview: {len(resp.content)} bytes, content-type={ct}")
 
     runner.run_test("video/previewAudio — TTS narration preview", test_preview_audio)
+
+    def test_preview_audio_stream():
+        """Preview TTS audio for scene 0 via the streaming variant."""
+        video_id = state.get("video_id")
+        assert video_id, "No video_id"
+        resp = vod_avatar_post("video", "previewAudioStream", {
+            "id": video_id,
+            "sceneId": 0,
+        }, timeout=60, raw=True)
+        ct = resp.headers.get("content-type", "")
+        assert len(resp.content) > 100, \
+            f"Expected audio data, got {len(resp.content)} bytes"
+        print(f"    Audio stream preview: {len(resp.content)} bytes, content-type={ct}")
+
+    runner.run_test("video/previewAudioStream — TTS narration preview (streaming)", test_preview_audio_stream)
+
+    def test_preview_url():
+        """Preview a public URL source before composing an explainer video."""
+        result = vod_avatar_post("video", "previewUrl", {"url": "https://example.com"})
+        assert "title" in result, f"Expected 'title': {result}"
+        assert "imageUrl" in result, f"Expected 'imageUrl': {result}"
+        print(f"    Preview: title={result.get('title')!r}")
+
+    runner.run_test("video/previewUrl — preview a URL source", test_preview_url)
+
+    # ════════════════════════════════════════════
+    # Phase 5: AI Composition Validation Rules
+    # ════════════════════════════════════════════
+    # Full AI composition requires source entries with existing captions/
+    # transcripts (see guide section 7); these tests exercise the
+    # per-format validation rules, which return immediately without
+    # requiring captioned content.
+
+    def test_compose_explainer_requires_brief_or_source():
+        """explainer-video with no sources and no userBrief is rejected."""
+        video_id = state.get("video_id")
+        assert video_id, "No video_id"
+        result = vod_avatar_post("video", "compose", {
+            "id": video_id, "formatType": "explainer-video",
+            "duration": 60, "sources": [],
+        })
+        assert result.get("code") == "USER_BRIEF_REQUIRED", \
+            f"Expected USER_BRIEF_REQUIRED, got: {result}"
+        print(f"    Correctly rejected: {result.get('code')}")
+
+    runner.run_test("video/compose — explainer-video requires brief or source", test_compose_explainer_requires_brief_or_source)
+
+    def test_compose_presentation_narration_requires_entry():
+        """presentation-narration without an entry source is rejected."""
+        video_id = state.get("video_id")
+        assert video_id, "No video_id"
+        result = vod_avatar_post("video", "compose", {
+            "id": video_id, "formatType": "presentation-narration",
+            "duration": 60, "sources": [],
+        })
+        assert result.get("code") == "PRESENTATION_REQUIRED", \
+            f"Expected PRESENTATION_REQUIRED, got: {result}"
+        print(f"    Correctly rejected: {result.get('code')}")
+
+    runner.run_test("video/compose — presentation-narration requires an entry source", test_compose_presentation_narration_requires_entry)
+
+    def test_compose_session_highlights_too_many_sources():
+        """session-highlights rejects more than one source."""
+        video_id = state.get("video_id")
+        assert video_id, "No video_id"
+        result = vod_avatar_post("video", "compose", {
+            "id": video_id, "formatType": "session-highlights",
+            "duration": 60,
+            "sources": [{"entryId": "1_aaaaaaaa"}, {"entryId": "1_bbbbbbbb"}],
+        })
+        assert result.get("code") == "TOO_MANY_SOURCES", \
+            f"Expected TOO_MANY_SOURCES, got: {result}"
+        print(f"    Correctly rejected: {result.get('code')}")
+
+    runner.run_test("video/compose — session-highlights rejects more than one source", test_compose_session_highlights_too_many_sources)
+
+    def test_compose_explainer_too_many_urls():
+        """explainer-video rejects more than 5 URL sources."""
+        video_id = state.get("video_id")
+        assert video_id, "No video_id"
+        urls = [{"url": f"https://example.com/{i}"} for i in range(6)]
+        result = vod_avatar_post("video", "compose", {
+            "id": video_id, "formatType": "explainer-video",
+            "duration": 60, "sources": urls,
+        })
+        assert result.get("code") == "TOO_MANY_URLS", \
+            f"Expected TOO_MANY_URLS, got: {result}"
+        print(f"    Correctly rejected: {result.get('code')}")
+
+    runner.run_test("video/compose — explainer-video rejects more than 5 URLs", test_compose_explainer_too_many_urls)
+
+    def test_compose_presentation_narration_rejects_url():
+        """presentation-narration rejects URL sources."""
+        video_id = state.get("video_id")
+        assert video_id, "No video_id"
+        result = vod_avatar_post("video", "compose", {
+            "id": video_id, "formatType": "presentation-narration",
+            "duration": 60, "sources": [{"url": "https://example.com"}],
+        })
+        assert result.get("code") == "URLS_NOT_SUPPORTED", \
+            f"Expected URLS_NOT_SUPPORTED, got: {result}"
+        print(f"    Correctly rejected: {result.get('code')}")
+
+    runner.run_test("video/compose — presentation-narration rejects URL sources", test_compose_presentation_narration_rejects_url)
 
     # ════════════════════════════════════════════
     # Phase 6: Status Lifecycle
@@ -327,35 +390,15 @@ def main():
 
     def test_invalid_avatar_id():
         """Verify video/add rejects invalid avatar ID."""
-        try:
-            vod_avatar_post("video", "add", {
-                "name": "Invalid Avatar Test",
-                "avatarId": "nonexistent_avatar_id_12345",
-            })
-            assert False, "Expected error for invalid avatarId"
-        except Exception as e:
-            err = str(e)
-            assert "AVATAR" in err.upper() or "404" in err or "400" in err or "not found" in err.lower(), \
-                f"Unexpected error: {err}"
-            print(f"    Correctly rejected: {err[:80]}")
+        result = vod_avatar_post("video", "add", {
+            "name": "Invalid Avatar Test",
+            "avatarId": "nonexistent_avatar_id_12345",
+        })
+        assert result.get("code") == "AVATAR_NOT_FOUND", \
+            f"Expected AVATAR_NOT_FOUND, got: {result}"
+        print(f"    Correctly rejected: {result.get('code')}")
 
     runner.run_test("video/add — rejects invalid avatarId", test_invalid_avatar_id)
-
-    def test_invalid_template_id():
-        """Verify avatar/upsert rejects invalid template ID."""
-        try:
-            vod_avatar_post("avatar", "upsert", {
-                "templateId": "nonexistent_template_xyz",
-                "background": {"type": "color", "color": "#FFFFFF"},
-            })
-            assert False, "Expected error for invalid templateId"
-        except Exception as e:
-            err = str(e)
-            assert "TEMPLATE" in err.upper() or "404" in err or "400" in err or "not found" in err.lower(), \
-                f"Unexpected error: {err}"
-            print(f"    Correctly rejected: {err[:80]}")
-
-    runner.run_test("avatar/upsert — rejects invalid templateId", test_invalid_template_id)
 
     def test_video_delete():
         """Delete the test video project."""
@@ -495,8 +538,6 @@ def main():
         print("\n--- --keep flag: skipping cleanup ---")
         if state.get("video_id") and not state.get("video_deleted"):
             print(f"  Video ID: {state['video_id']}")
-        if state.get("avatar_id"):
-            print(f"  Avatar ID: {state['avatar_id']}")
         if state.get("generated_entry_id"):
             print(f"  Generated Entry: {state['generated_entry_id']}")
     else:

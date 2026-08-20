@@ -33,7 +33,7 @@ Experience Components are front-end embeddable apps and widgets that simplify bu
 | **Player (PlayKit)** | iframe or JS | KS in provider config | [Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md) |
 | **Express Recorder** | JS (`<script>`) | KS in config object | [Express Recorder](KALTURA_EXPRESS_RECORDER_API.md) |
 | **Captions Editor** | iframe | KS as URL param | [Captions Editor](KALTURA_CAPTIONS_EDITOR_API.md) |
-| **Conversational Avatar** | JS (iframe via SDK) | Client ID + Flow ID | [Conversational Avatar](KALTURA_CONVERSATIONAL_AVATAR_API.md) |
+| **Agentic Avatars** | Node SDK (server) + JS module (browser) | `AGENTIC_PARTNER_ID`/`AGENTIC_ADMIN_SECRET` → scoped KS | [Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md) |
 | **Chat & Collaborate** | Managed by Events Platform | Event session context | [Chat & Collaborate](KALTURA_CNC_API.md) |
 | **Genie Widget** | ES module | KS in runtime settings | [Genie Widget](KALTURA_GENIE_WIDGET_API.md) |
 | **Media Manager** | ES module | KS in runtime settings | [Media Manager](KALTURA_MEDIA_MANAGER_API.md) |
@@ -53,7 +53,7 @@ Each component creates, modifies, or interacts with Kaltura content and services
 
 **Captions Editor (Captions Studio)** — Interactive caption editing with synchronized video playback and audio waveform visualization. Embedded as an iframe with URL parameters. Requires an existing caption asset. See [Captions Editor Guide](KALTURA_CAPTIONS_EDITOR_API.md).
 
-**Conversational Avatar** — AI-powered video avatars for real-time conversations. The embed creates a sandboxed iframe and communicates via `postMessage`. Supports Dynamic Page Prompts to configure persona and behavior at runtime. See [Conversational Avatar Guide](KALTURA_CONVERSATIONAL_AVATAR_API.md). Kaltura also offers a full Avatar SDK (`@unisphere/models-sdk-js`) for direct WebRTC rendering and backend API control — the standalone guide covers both approaches.
+**Agentic Avatars** — AI-powered video avatars for real-time conversations, built on the intelligent-agents-sdk (`@kaltura/intelligent-agents`). A Node SDK provisions agents and mints scoped tokens server-side; a browser runtime drives the live conversation, GenUI, and Presenter-guided walkthroughs. See [Agentic Avatars Guide](KALTURA_CONVERSATIONAL_AVATAR_API.md).
 
 **Chat & Collaborate (CnC)** — Real-time chat, Q&A, polls, announcements, and reactions alongside video content. Activated through the Events Platform — not a standalone embed. See [Chat & Collaborate Guide](KALTURA_CNC_API.md).
 
@@ -65,7 +65,7 @@ Each component creates, modifies, or interacts with Kaltura content and services
 
 **Agents Widget** — UI for managing automated content-processing agents. Users create and configure agents with triggers (new upload, category assignment) and actions (captions, translation, summary, moderation). Renders as a drawer panel. Loaded as an ES module via the Unisphere loader. See [Agents Widget Guide](KALTURA_AGENTS_WIDGET_API.md). For AI moderation policies, rules, and scoring, see the [Moderation API Guide](KALTURA_MODERATION_API.md).
 
-**VOD Avatar Studio** — Studio for creating pre-recorded avatar video presentations from scripts. Users select an AI avatar, enter a script, and generate a professional video saved as a Kaltura entry. For real-time conversational avatars, see the Conversational Avatar guide instead. See [VOD Avatar Studio Guide](KALTURA_VOD_AVATAR_API.md).
+**VOD Avatar Studio** — Studio for creating pre-recorded avatar video presentations from scripts. Users select an AI avatar, enter a script, and generate a professional video saved as a Kaltura entry. For real-time conversational avatars, see the Agentic Avatars guide instead. See [VOD Avatar Studio Guide](KALTURA_VOD_AVATAR_API.md).
 
 **Embeddable Analytics** — Analytics visualization dashboards embedded via iframe with a `postMessage` protocol. Provides the same views as the KMC — engagement, technology, geo, contributors, live stream health, and entity drill-downs. See [Embeddable Analytics Guide](KALTURA_ANALYTICS_EMBED_API.md).
 
@@ -93,7 +93,7 @@ Each standalone guide includes component-specific error handling. Common pattern
 - **[Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md)** — Video/audio playback with 30+ plugins  
 - **[Express Recorder](KALTURA_EXPRESS_RECORDER_API.md)** — Browser-based WebRTC recording  
 - **[Captions Editor](KALTURA_CAPTIONS_EDITOR_API.md)** — Interactive caption editing with video/waveform sync  
-- **[Conversational Avatar](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — AI-powered conversational video avatar embed  
+- **[Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — AI-powered conversational video avatars via the intelligent-agents-sdk  
 - **[Chat & Collaborate](KALTURA_CNC_API.md)** — Real-time chat and collaboration alongside video  
 - **[Genie Widget](KALTURA_GENIE_WIDGET_API.md)** — Conversational AI search widget  
 - **[Media Manager](KALTURA_MEDIA_MANAGER_API.md)** — Browsable media library with select and manage modes  

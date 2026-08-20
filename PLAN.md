@@ -157,4 +157,4 @@ Drop folder lifecycle, file tracking, folder types (LOCAL, FTP, SFTP, S3, WEBEX,
 ### Experiences
 - **Player Embed** — Player v7, plugins, runtime API
 - **Unisphere Framework** — Micro-frontend loader, 15 widgets, multi-region CDN
-- **Experience Components** — Express Recorder, Captions Editor, Genie Widget, Media Manager, Content Lab, Agents Widget, VOD Avatar, Conversational Avatar, CnC, Analytics Embed
+- **Experience Components** — Express Recorder, Captions Editor, Genie Widget, Media Manager, Content Lab, Agents Widget, VOD Avatar, Agentic Avatars, CnC, Analytics Embed

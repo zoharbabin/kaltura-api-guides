@@ -61,7 +61,7 @@ Use approved product names in all user/customer-facing text:
 
 - **Positive framing only.** State what to do: "Use Y to accomplish this." Never write "Don't do X", "avoid X", "never X", "X will fail if...", or "X won't work." AI agents follow positive instructions more reliably than prohibitions. If behavior matters, frame it as the correct action: "Use `flavorAsset.getUrl` for flavor URLs — it handles CDN routing and tokenization" (not "Don't construct flavor URLs manually").
 - **Language-agnostic.** All server-side API examples use `curl` with shell variables. JavaScript/HTML only for browser-based components (Player, widgets).
-- **Self-contained.** No external links. Inline all information an agent needs. Source repos and "learn more" URLs are research aids — keep them out of published guides.
+- **Self-contained.** No external links. Inline all information an agent needs. Source repos and "learn more" URLs are research aids — keep them out of published guides. See AGENTS.md for the narrow, named exception covering guides that front a versioned public SDK docs site.
 - **Actionable instructions only.** Every instruction must be something an AI agent can execute. Replace "contact support" with specific prerequisite statements: "Requires X configured on your account (one-time setup by your Kaltura account team)."
 - **Minimal prose.** Tables for structured data. Let examples speak. Commentary only when behavior is non-obvious.
 - **Trailing double-spaces** on lines that must render as separate lines (header block, multi-line list items).

@@ -69,7 +69,7 @@ Guides for delivering content to end users through players, widgets, events, and
 | [Experience Components](KALTURA_EXPERIENCE_COMPONENTS_API.md) | Playback & Content Hubs | Index of all embeddable components with shared guidelines |
 | [Express Recorder](KALTURA_EXPRESS_RECORDER_API.md) | Playback & Content Hubs | Browser-based WebRTC video/audio/screen recording |
 | [Captions Editor](KALTURA_CAPTIONS_EDITOR_API.md) | Playback & Content Hubs | Interactive caption editing with video/waveform sync |
-| [Conversational Avatar](KALTURA_CONVERSATIONAL_AVATAR_API.md) | Playback & Content Hubs | AI avatar embed: Socket SDK (WebRTC, GenUI, mic control) + Iframe SDK |
+| [Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md) | Playback & Content Hubs | AI-powered conversational video avatars via the intelligent-agents-sdk |
 | [Chat & Collaborate](KALTURA_CNC_API.md) | Playback & Content Hubs | Real-time chat, Q&A, polls alongside video |
 | [Genie Widget](KALTURA_GENIE_WIDGET_API.md) | Playback & Content Hubs | Conversational AI search widget over video library |
 | [Media Manager](KALTURA_MEDIA_MANAGER_API.md) | Playback & Content Hubs | Browsable media library: select, upload, manage entries |
@@ -166,7 +166,7 @@ graph TD
     EC["Experience Components"]
     ER["Express Recorder"]
     CE["Captions Editor"]
-    CVA["Conv. Avatar"]
+    CVA["Agentic Avatars"]
     CNC["Chat & Collab"]
     GW["Genie Widget"]
     EA["Embed Analytics"]
@@ -250,7 +250,7 @@ Blue = Foundation | Purple = Creation | Orange = Management | Green = Experience
 | Automate content processing (captions, translation on upload) | [Agents Widget](KALTURA_AGENTS_WIDGET_API.md) or [Agents Manager API](KALTURA_AGENTS_MANAGER_API.md) |
 | Generate avatar videos from scripts | [VOD Avatar Studio](KALTURA_VOD_AVATAR_API.md) |
 | Record from browser | [Express Recorder](KALTURA_EXPRESS_RECORDER_API.md) |
-| Embed a real-time conversational AI avatar | [Conversational Avatar](KALTURA_CONVERSATIONAL_AVATAR_API.md) |
+| Embed a real-time conversational AI avatar | [Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md) |
 | Embed analytics dashboards | [Embeddable Analytics](KALTURA_ANALYTICS_EMBED_API.md) |
 | Edit captions visually | [Captions Editor](KALTURA_CAPTIONS_EDITOR_API.md) |
 | Create a virtual event | [Events Platform](KALTURA_EVENTS_PLATFORM_API.md) |

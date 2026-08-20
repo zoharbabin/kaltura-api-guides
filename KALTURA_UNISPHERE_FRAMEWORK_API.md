@@ -629,7 +629,7 @@ Each region serves its own loader, runtime.json manifest, and widget bundles. Pa
 - **[VOD Avatar Studio API](KALTURA_VOD_AVATAR_API.md)** — Pre-recorded avatar video generation from scripts  
 - **[Genie Widget API](KALTURA_GENIE_WIDGET_API.md)** — Conversational AI search widget with player integration  
 - **[AI Genie API](KALTURA_AI_GENIE_API.md)** — Server-side Genie HTTP API for custom RAG integrations  
-- **[Conversational Avatar](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — AI-powered conversational video avatar embed  
+- **[Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md)** — AI-powered conversational video avatars via the intelligent-agents-sdk  
 - **[Experience Components](KALTURA_EXPERIENCE_COMPONENTS_API.md)** — Index of all embeddable components with shared guidelines  
 - **[Player Embed Guide](KALTURA_PLAYER_EMBED_GUIDE.md)** — Player v7 embed with Unisphere plugin support  
 - **[Session Guide](KALTURA_SESSION_GUIDE.md)** — KS generation and privilege management  

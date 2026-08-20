@@ -85,13 +85,13 @@ KALTURA_VIDEO_PORTAL_BASE_URL=https://your-site.events.kaltura.com
 | [Experience Components API](KALTURA_EXPERIENCE_COMPONENTS_API.md) | Index of all embeddable components with shared guidelines | 26 tests |
 | [Express Recorder API](KALTURA_EXPRESS_RECORDER_API.md) | Browser-based WebRTC video, audio, and screen recording | — |
 | [Captions Editor API](KALTURA_CAPTIONS_EDITOR_API.md) | Interactive caption editing with video/waveform sync | — |
-| [Conversational Avatar Embed](KALTURA_CONVERSATIONAL_AVATAR_API.md) | AI-powered conversational video avatar: Socket SDK (WebRTC, GenUI) + Iframe SDK | — |
+| [Agentic Avatars](KALTURA_CONVERSATIONAL_AVATAR_API.md) | AI-powered conversational video avatars via the intelligent-agents-sdk (management + live experience runtime) | — |
 | [Chat & Collaborate (CnC)](KALTURA_CNC_API.md) | Real-time chat, Q&A, polls alongside video content | — |
 | [Genie Widget API](KALTURA_GENIE_WIDGET_API.md) | Conversational AI search widget over video library | 7 tests |
 | [Media Manager API](KALTURA_MEDIA_MANAGER_API.md) | Browsable media library: select, upload, manage entries | 11 tests |
 | [Content Lab Widget](KALTURA_CONTENT_LAB_WIDGET_API.md) | Embeddable AI content repurposing widget (summaries, chapters, clips, quizzes) | 9 tests |
 | [Agents Widget API](KALTURA_AGENTS_WIDGET_API.md) | Automated content-processing agent management UI | 7 tests |
-| [VOD Avatar Studio API](KALTURA_VOD_AVATAR_API.md) | Pre-recorded avatar video creation: server-side API and widget embed | 22 tests |
+| [VOD Avatar Studio API](KALTURA_VOD_AVATAR_API.md) | Pre-recorded avatar video creation: server-side API and widget embed | 24 tests |
 | [Embeddable Analytics API](KALTURA_ANALYTICS_EMBED_API.md) | Analytics dashboards via iframe + postMessage | — |
 | [Unisphere Framework API](KALTURA_UNISPHERE_FRAMEWORK_API.md) | Micro-frontend framework: loader, workspace, services | 21 tests |
 | [Multi-Account Management API](KALTURA_MULTI_ACCOUNT_MANAGEMENT_API.md) | Sub-accounts, cross-account auth, multi-account analytics | 6 tests |
