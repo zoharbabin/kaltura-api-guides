@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """End-to-end validation of the VOD Avatar Studio API — 23 tests.
-Covers: partner configuration, avatar ID reuse, video CRUD, audio preview,
+Covers: partner configuration, avatar creation, video CRUD, audio preview,
 URL preview, AI composition validation rules, video generation, status
 lifecycle, error validation, CDN/widget availability."""
 
@@ -13,7 +13,7 @@ import requests
 
 sys.path.insert(0, os.path.dirname(__file__))
 from test_helpers import (
-    kaltura_post, vod_avatar_post, TestRunner,
+    kaltura_post, vod_avatar_post, avatar_catalog_post, TestRunner,
     PARTNER_ID, KS, SERVICE_URL, VOD_AVATAR_URL,
 )
 
@@ -60,31 +60,40 @@ def main():
     runner.run_test("partner/initConfiguration — verify account provisioning", test_partner_init_configuration)
 
     # ════════════════════════════════════════════
-    # Phase 2: Obtain an Avatar ID
+    # Phase 2: Create an Avatar
     # ════════════════════════════════════════════
-    # Avatar creation and template selection moved to a separate avatar
+    # Avatar creation and template selection live on a separate avatar
     # catalog service (see guide section 5) — not part of this API. Tests
-    # reuse an avatarId already assigned to an existing video project in
-    # this account, the same way an agent would reuse an avatarId returned
-    # by the Unisphere widget's avatar picker across multiple videos.
+    # create a fresh avatar from a template for each run, the same way the
+    # Unisphere widget's avatar picker creates one on first use. Reusing an
+    # avatarId scraped from an older video project is unsafe — if that
+    # avatar has since been deleted from the catalog, video/add still
+    # accepts the stale ID (it isn't validated there), but previewAudio and
+    # previewAudioStream fail with a raw HTTP 500 when they try to resolve
+    # its voice. Always obtain a current avatarId instead of reusing one.
 
-    def test_obtain_avatar_id():
-        """Find a reusable avatarId from an existing video project."""
-        result = vod_avatar_post("video", "list", {
-            "filter": {"orderBy": "-createdAt"},
-            "pager": {"offset": 0, "limit": 50},
+    def test_create_avatar():
+        """Create a fresh avatar from the 'jane' template."""
+        templates = avatar_catalog_post("avatar-template", "list", {
+            "pager": {"offset": 0, "limit": 500},
         })
-        assert "objects" in result, f"Expected 'objects': {result}"
-        avatar_id = None
-        for v in result["objects"]:
-            if v.get("avatarId"):
-                avatar_id = v["avatarId"]
-                break
-        assert avatar_id, "No existing video project has an avatarId to reuse"
-        state["avatar_id"] = avatar_id
-        print(f"    Reusing avatarId: {avatar_id}")
+        assert "objects" in templates, f"Expected 'objects': {templates}"
+        jane = next((t for t in templates["objects"] if t.get("name", "").lower() == "jane"), None)
+        assert jane, f"Expected a 'jane' template: {[t.get('name') for t in templates['objects']]}"
+        avatar = avatar_catalog_post("avatar", "create", {
+            "templateId": jane["id"],
+            "background": {"type": "color", "value": "#CEEEDB"},
+            "adminTags": ["api-doc-validation-test"],
+        })
+        assert "id" in avatar, f"Expected 'id': {avatar}"
+        state["avatar_id"] = avatar["id"]
+        runner.register_cleanup(
+            f"avatar {avatar['id']}",
+            lambda aid=avatar["id"]: avatar_catalog_post("avatar", "delete", {"id": aid}),
+        )
+        print(f"    Created avatar: {avatar['id']} (template: {jane['name']})")
 
-    runner.run_test("video/list — obtain a reusable avatarId", test_obtain_avatar_id)
+    runner.run_test("avatar/create — create a fresh avatar", test_create_avatar)
 
     # ════════════════════════════════════════════
     # Phase 3: Video CRUD

@@ -95,6 +95,7 @@ AUTH_BROKER_URL = os.environ.get("KALTURA_AUTH_BROKER_URL", "https://auth.nvp1.o
 REPORTS_URL = os.environ.get("KALTURA_REPORTS_URL", "https://reports.nvp1.ovp.kaltura.com")
 SCM_URL = os.environ.get("KALTURA_SCM_URL", "https://scm.nvp1.ovp.kaltura.com/api/v1")
 VOD_AVATAR_URL = os.environ.get("KALTURA_VOD_AVATAR_URL", "https://video-avatar.nvp1.ovp.kaltura.com/api/v1")
+AVATAR_CATALOG_URL = os.environ.get("KALTURA_AVATAR_CATALOG_URL", "https://api.avatar.us.kaltura.ai/v1")
 
 
 def kaltura_post(service, action, params=None):
@@ -223,6 +224,25 @@ def vod_avatar_post(service, action, json_body=None, timeout=30, raw=False):
         return resp
     resp.raise_for_status()
     return resp.json()
+
+
+def avatar_catalog_post(service, action, json_body=None, timeout=30):
+    """POST to the avatar catalog microservice. Returns parsed JSON."""
+    headers = {
+        "Authorization": f"Bearer {KS}",
+        "Content-Type": "application/json",
+    }
+    resp = requests.post(
+        f"{AVATAR_CATALOG_URL}/{service}/{action}",
+        headers=headers,
+        json=json_body or {},
+        timeout=timeout,
+    )
+    resp.raise_for_status()
+    result = resp.json()
+    if isinstance(result, dict) and result.get("objectType") == "KalturaAPIException":
+        raise Exception(f"Avatar catalog error: {result.get('message')} (code: {result.get('code')})")
+    return result
 
 
 def agents_post(path, json_body=None):

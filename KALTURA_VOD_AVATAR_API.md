@@ -848,7 +848,7 @@ const unsubscribe = pubSub.subscribe(
 
 The API always returns HTTP 200. Check the response body for `{ "objectType": "KalturaAPIException", "code": "...", "message": "..." }` to detect an error — do not rely on the HTTP status code.
 
-`previewAudio` and `previewAudioStream` are the exception: an unhandled failure resolving the avatar's voice or from the underlying text-to-speech provider surfaces as a raw HTTP 500 with a generic body, not a `KalturaAPIException`. Check the HTTP status code for these two calls specifically, and retry with backoff — a 500 here indicates a transient upstream TTS or avatar-catalog issue rather than a request error on your side.
+`previewAudio` and `previewAudioStream` are the exception: unlike `video/add` and `video/update`, they resolve the video's `avatarId` (or a scene narration's override `avatarId`) against the avatar catalog to fetch its voice before generating audio. If that avatar has since been deleted from the catalog, the lookup fails as a raw HTTP 500 with a generic body instead of a clean `AVATAR_NOT_FOUND` `KalturaAPIException`. Check the HTTP status code for these two calls specifically, and treat a 500 as a signal to obtain a current `avatarId` through the Unisphere widget's avatar picker (see section 5) and update the video with it, rather than a transient error to retry.
 
 | Error Code | Meaning | Resolution |
 |------------|---------|------------|
