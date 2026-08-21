@@ -148,11 +148,11 @@ curl -X POST "$KALTURA_SERVICE_URL/service/conversionProfile/action/add" \
   -d "format=1" \
   -d "conversionProfile[objectType]=KalturaConversionProfile" \
   -d "conversionProfile[name]=Alpha Channel Avatars" \
-  -d "conversionProfile[type]=2" \
+  -d "conversionProfile[type]=1" \
   -d "conversionProfile[flavorParamsIds]=$KALTURA_ALPHA_FLAVOR_PARAMS_ID"
 ```
 
-`type=2` is `MEDIA_ENTRY` (on-demand conversion, not the account's default ingest profile) — it does not affect any other content on the account. See `KALTURA_UPLOAD_AND_INGESTION_API.md` for the full flavor and conversion profile object reference.
+`type=1` is `MEDIA` (on-demand conversion, not the account's default ingest profile) — it does not affect any other content on the account. See `KALTURA_UPLOAD_AND_INGESTION_API.md` for the full flavor and conversion profile object reference.
 
 # 6. Step 3 — Convert and verify
 
