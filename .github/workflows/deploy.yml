@@ -38,7 +38,7 @@ jobs:
           python-version: "3.x"
 
       - name: Install MkDocs Material
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material mkdocs-panzoom-plugin
 
       - name: Prepare docs directory
         run: |
@@ -79,7 +79,7 @@ jobs:
 
       - name: Install MkDocs Material
         if: steps.check-secrets.outputs.skip != 'true'
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material mkdocs-panzoom-plugin
 
       - name: Prepare docs directory
         if: steps.check-secrets.outputs.skip != 'true'

@@ -55,6 +55,9 @@ extra_css:
 
 plugins:
   - search
+  - panzoom:
+      always_show_hint: true
+      full_screen: true
 
 markdown_extensions:
   - tables
