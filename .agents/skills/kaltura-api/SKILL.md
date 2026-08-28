@@ -1,6 +1,6 @@
 ---
 name: kaltura-api
-description: Build applications on Kaltura — The Agentic Digital Experience Platform. 51 guides covering authentication (sessions, AppTokens, SSO/SAML), content management (upload, search, categories, metadata, captions), playback, AI services (captions, translation, agents, conversational AI), virtual events, user management, multi-stream, cue points & interactive video (hub + 5 dedicated type guides), short links, content distribution, syndication feeds, analytics, gamification, webhooks, messaging, content moderation (flagging, AI-powered via REACH), experience components (Player, Express Recorder, Captions Editor, Genie Widget, Media Manager, Content Lab, Agents Widget, VOD Avatar Studio, Agentic Avatars via intelligent-agents-sdk, Chat & Collaborate, Embeddable Analytics), Unisphere framework, multi-account management, LTI/LMS integration. 980+ tests validated against live API. API v3 (form-encoded) and modern JSON APIs with curl examples.
+description: Build applications on Kaltura — The Agentic Digital Experience Platform. 52 guides covering authentication (sessions, AppTokens, SSO/SAML), content management (upload, search, categories, metadata, captions), playback, AI services (captions, translation, agents, conversational AI), virtual events, user management, multi-stream, cue points & interactive video (hub + 5 dedicated type guides), short links, content distribution, syndication feeds, analytics, gamification, webhooks, messaging, content moderation (flagging, AI-powered via REACH), experience components (Player, Express Recorder, Captions Editor, Genie Widget, Media Manager, Content Lab, Agents Widget, VOD Avatar Studio, Agentic Avatars via intelligent-agents-sdk, Chat & Collaborate, Embeddable Analytics), Unisphere framework, multi-account management, LTI/LMS integration. 980+ tests validated against live API. API v3 (form-encoded) and modern JSON APIs with curl examples.
 ---
 
 # Kaltura API Integration
@@ -108,6 +108,8 @@ Read the relevant guide when you need to implement a specific capability:
 ### Getting Started
 
 - **[API Getting Started](../../../KALTURA_API_GETTING_STARTED.md)** — API request structure, your first API call, multirequest batching with result chaining, error handling patterns, client libraries. Start here for API fundamentals.
+
+- **[Content Model and Search Guide](../../../KALTURA_CONTENT_MODEL_AND_SEARCH_GUIDE.md)** — The entry object model (`KalturaBaseEntry` hierarchy, `KalturaMediaType`, `KalturaEntryType`), how categories/custom metadata/tags/cue points differ, the upload-to-searchable pipeline, eSearch's content-gating indexing behavior, and the AI Genie Knowledge Base lifecycle (add/upload/get/delete, status semantics). Read this before designing where to store or search for content.
 
 ### Content Management
 

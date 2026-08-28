@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/kaltura/kaltura-agents-api-guides?label=Release)](https://github.com/kaltura/kaltura-agents-api-guides/releases/latest)
-[![Guides](https://img.shields.io/badge/Guides-53-green.svg)](#guides)
+[![Guides](https://img.shields.io/badge/Guides-54-green.svg)](#guides)
 [![Tests](https://img.shields.io/badge/Live--Tested-1000+_tests-brightgreen.svg)](#guides)
 [![llms.txt](https://img.shields.io/badge/llms.txt-available-purple.svg)](llms.txt)
 [![Agent Skill](https://img.shields.io/badge/Agent_Skill-kaltura--api-orange.svg)](.agents/skills/kaltura-api/SKILL.md)
@@ -56,6 +56,7 @@ KALTURA_VIDEO_PORTAL_BASE_URL=https://your-site.events.kaltura.com
 | [API Getting Started](KALTURA_API_GETTING_STARTED.md) | API structure, first call, multirequest batching, error handling | 13 tests |
 | [Session (KS) Guide](KALTURA_SESSION_GUIDE.md) | Kaltura Session generation and management | 13 tests |
 | [AppTokens API](KALTURA_APPTOKENS_API.md) | Secure server-to-server auth without admin secrets | 17 tests |
+| [Content Model and Search Guide](KALTURA_CONTENT_MODEL_AND_SEARCH_GUIDE.md) | Entry object model, categories/metadata/tags/cue points, eSearch indexing, AI Genie Knowledge Base | 6 tests |
 | [eSearch API](KALTURA_ESEARCH_API.md) | Unified search across entries, captions, metadata | 25 tests |
 | [Upload & Ingestion API](KALTURA_UPLOAD_AND_INGESTION_API.md) | Upload, chunked ingest, entry CRUD, flavors, attachments | 31 tests |
 | [Video Editing API](KALTURA_VIDEO_EDITING_API.md) | Trim, clip, concat, overlay, chroma key, caption burn-in, effects | 18 tests |

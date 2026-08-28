@@ -15,6 +15,7 @@ Every integration begins with credentials and authentication. These guides are p
 | [API Getting Started](KALTURA_API_GETTING_STARTED.md) | API structure, endpoints, first call, multirequest batching, error handling |
 | [Session Guide (KS)](KALTURA_SESSION_GUIDE.md) | KS types, creation methods, privileges, validation, security |
 | [AppTokens](KALTURA_APPTOKENS_API.md) | Production auth without exposing secrets, HMAC, scoped tokens |
+| [Content Model and Search Guide](KALTURA_CONTENT_MODEL_AND_SEARCH_GUIDE.md) | Entry object model, categories/metadata/tags/cue points, eSearch indexing behavior, AI Genie Knowledge Base |
 
 ## Creation — Capturing, Editing & AI Enrichment
 
@@ -95,8 +96,12 @@ graph TD
     GS["API Getting Started"]
     KS["Session Guide"]
     AT["AppTokens"]
+    CMS["Content Model & Search"]
 
     GS --> KS --> AT
+    KS --> CMS
+    CMS --> ES
+    CMS --> AI
 
     %% Creation
     UD["Upload & Delivery"]
@@ -219,7 +224,7 @@ graph TD
     classDef management fill:#F5A623,color:#fff,stroke:#C5861A
     classDef experience fill:#50C878,color:#fff,stroke:#3A9A5A
 
-    class GS,KS,AT foundation
+    class GS,KS,AT,CMS foundation
     class UD,VE,MS,CT,CM,RE,AG,AI,CP,QZ,CS,AN,AD,CE creation
     class ES,CA,UM,AB,MA,AR,AE,WH,APR,MSG,MO,LTI management
     class PE,EC,ER,CE,CVA,CNC,GW,EA,UF,MM,CL,AW,VA,EP,UP,GA,DI,SY experience
@@ -241,6 +246,7 @@ Blue = Foundation | Purple = Creation | Orange = Management | Green = Experience
 | Trim, clip, overlay, or compose video | [Video Editing](KALTURA_VIDEO_EDITING_API.md) |
 | Embed a video player | [Player Embed](KALTURA_PLAYER_EMBED_GUIDE.md) |
 | Search my content library | [eSearch](KALTURA_ESEARCH_API.md) |
+| Understand how entries, categories, metadata, tags, and search fit together | [Content Model and Search Guide](KALTURA_CONTENT_MODEL_AND_SEARCH_GUIDE.md) |
 | Add captions or transcripts | [Captions & Transcripts](KALTURA_CAPTIONS_AND_TRANSCRIPTS_API.md) |
 | Enrich content with AI (captions, translation, moderation, and more) | [REACH API](KALTURA_REACH_API.md) |
 | Build a chatbot over video | [AI Genie](KALTURA_AI_GENIE_API.md) |
